@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Rapido</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">Rapido</string>
+    <string name="title_activity_twitter">Twitter Authorization</string>
+
+    <string name="label_update">Update:</string>
+    <string name="twitter">Twitter</string>
+    <string name="facebook">Facebook</string>
+    <string name="button_send">Send</string>
+    
+    <string name="error_message_too_long">Message too long!</string>
+    <string name="error_not_posted">Error: Message not posted.</string>
+    <string name="error_no_services_selected">Error: No services selected to update.</string>
+    
+    <string name="alert_posted_facebook">Posted successfully to Facebook!</string>
+    <string name="alert_posted_twitter">Posted successfully to Twitter!</string>
+    
+    <string name="prefs_category_connected_title">Connected Accounts</string>
+    <string name="prefs_facebook_title">Facebook</string>
+    <string name="prefs_facebook_enabled">rapido_facebook_enabled</string>
+    <string name="prefs_facebook_expiration">rapido_facebook_expiration</string>
+    <string name="prefs_facebook_key">rapido_facebook_key</string>
+    <string name="prefs_facebook_name">rapido_facebook_name</string>
+    <string name="prefs_facebook_summary_on">Connected to %s</string>
+    
+    <string name="prefs_twitter_title">Twitter</string>
+    <string name="prefs_twitter_enabled">rapido_twitter_enabled</string>
+    <string name="prefs_twitter_token">rapido_twitter_token</string>
+    <string name="prefs_twitter_secret">rapido_twitter_secret</string>
+    <string name="prefs_twitter_username">rapido_facebook_username</string>
+    <string name="prefs_twitter_summary_on">Connected to %s</string>
+    
+    <string name="prefs_category_application_settings">Application Settings</string>
+    <string name="prefs_sendOnEnter_title">Send on Enter?</string>
+    <string name="prefs_sendOnEnter_enabled">rapido_sendOnEnter_enabled</string>
+    <string name="prefs_sendOnEnter_summary_on">Send the message upon pressing enter.</string>
+    
+    <string name="temp_twitter">Twitter posting will occur here</string>
+</resources>
