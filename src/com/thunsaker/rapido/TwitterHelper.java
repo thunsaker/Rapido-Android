@@ -1,4 +1,4 @@
-package com.thunsaker.rapido.android;
+package com.thunsaker.rapido;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;

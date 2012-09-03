@@ -3,6 +3,7 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">Rapido</string>
     <string name="title_activity_twitter">Twitter Authorization</string>
+    <string name="app_version_number">1.1</string>
 
     <string name="label_update">Update:</string>
     <string name="twitter">Twitter</string>
@@ -16,9 +17,12 @@
     <string name="alert_posted_facebook">Posted successfully to Facebook!</string>
     <string name="alert_posted_twitter">Posted successfully to Twitter!</string>
     
+    <string name="dialog_no_internets">No internet connection detected.</string>
+    
     <string name="prefs_category_connected_title">Connected Accounts</string>
     <string name="prefs_facebook_title">Facebook</string>
     <string name="prefs_facebook_enabled">rapido_facebook_enabled</string>
+    <string name="prefs_facebook_connected">rapido_facebook_connected</string>
     <string name="prefs_facebook_expiration">rapido_facebook_expiration</string>
     <string name="prefs_facebook_key">rapido_facebook_key</string>
     <string name="prefs_facebook_name">rapido_facebook_name</string>
@@ -26,6 +30,7 @@
     
     <string name="prefs_twitter_title">Twitter</string>
     <string name="prefs_twitter_enabled">rapido_twitter_enabled</string>
+    <string name="prefs_twitter_connected">rapido_twitter_connected</string>
     <string name="prefs_twitter_token">rapido_twitter_token</string>
     <string name="prefs_twitter_secret">rapido_twitter_secret</string>
     <string name="prefs_twitter_username">rapido_facebook_username</string>
@@ -35,6 +40,9 @@
     <string name="prefs_sendOnEnter_title">Send on Enter?</string>
     <string name="prefs_sendOnEnter_enabled">rapido_sendOnEnter_enabled</string>
     <string name="prefs_sendOnEnter_summary_on">Send the message upon pressing enter.</string>
+    
+    <string name="prefs_clear_accounts_title">Clear Account Settings</string>
+    <string name="prefs_clear_accounts">rapido_accounts_clear</string>
     
     <string name="temp_twitter">Twitter posting will occur here</string>
 </resources>

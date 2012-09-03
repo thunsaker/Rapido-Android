@@ -1,4 +1,4 @@
-package com.thunsaker.rapido.android;
+package com.thunsaker.rapido;
 
 /* 
  * 

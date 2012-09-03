@@ -1,11 +1,16 @@
-package com.thunsaker.rapido.android;
+package com.thunsaker.rapido;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
+import android.preference.Preference.OnPreferenceClickListener;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
@@ -33,6 +38,18 @@ public class Preferences extends SherlockPreferenceActivity implements OnSharedP
         ab.setDisplayUseLogoEnabled(useLogo);
         
         fbHelper = new FacebookAuthenticationHelper(Preferences.this, getApplicationContext());
+        
+        Preference clear_prefs = findPreference(getString(R.string.prefs_clear_accounts));
+        clear_prefs.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				ClearTwitterPreferences();
+				ClearFacebookPreferences();
+				Toast.makeText(getApplicationContext(), "All Application Settings Cleared", Toast.LENGTH_SHORT).show();
+				return false;
+			}
+        });
 	}
 	
 	@Override
@@ -71,22 +88,33 @@ public class Preferences extends SherlockPreferenceActivity implements OnSharedP
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		if(getString(R.string.prefs_facebook_enabled).equals(key)) {
-			if(PreferencesHelper.getFacebookEnabled(getApplicationContext())) {
+		if(getString(R.string.prefs_facebook_connected).equals(key)) {
+			if(PreferencesHelper.getFacebookConnected(getApplicationContext())) {
 				fbHelper.AuthenticateWithFacebook();
 			} else {
 				fbHelper.SignOut();
-				PreferencesHelper.setFacebookKey(getApplicationContext(), null);
+				ClearFacebookPreferences();
 			}
-		} else if (getString(R.string.prefs_twitter_enabled).equals(key)) {
-			if(PreferencesHelper.getTwitterEnabled(getApplicationContext())) {
+		} else if (getString(R.string.prefs_twitter_connected).equals(key)) {
+			if(PreferencesHelper.getTwitterConnected(getApplicationContext())) {
 				startActivity(new Intent(getApplicationContext(), TwitterAuthorizationActivity.class));
 			} else {
 				Log.i(TAG, "Wiping twitter user tokens");
-				PreferencesHelper.setTwitterToken(getApplicationContext(), null);
-				PreferencesHelper.setTwitterSecret(getApplicationContext(), null);
-				
+				ClearTwitterPreferences();
 			}
 		}
+	}
+	
+	public void ClearTwitterPreferences() {
+		PreferencesHelper.setTwitterConnected(getApplicationContext(), false);
+		PreferencesHelper.setTwitterEnabled(getApplicationContext(), false);
+		PreferencesHelper.setTwitterToken(getApplicationContext(), null);
+		PreferencesHelper.setTwitterSecret(getApplicationContext(), null);
+	}
+	
+	public void ClearFacebookPreferences() {
+		PreferencesHelper.setFacebookConnected(getApplicationContext(), false);
+		PreferencesHelper.setFacebookEnabled(getApplicationContext(), false);
+		PreferencesHelper.setFacebookKey(getApplicationContext(), null);
 	}
 }

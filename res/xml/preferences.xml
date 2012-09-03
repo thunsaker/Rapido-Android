@@ -4,13 +4,19 @@
         android:title="@string/prefs_category_connected_title">
 		<CheckBoxPreference 
 		    android:title="@string/prefs_facebook_title"
-		    android:key="@string/prefs_facebook_enabled"
+		    android:key="@string/prefs_facebook_connected"
 		    android:defaultValue="false"/>
 		
 		<CheckBoxPreference
 		    android:title="@string/prefs_twitter_title"
-		    android:key="@string/prefs_twitter_enabled"
+		    android:key="@string/prefs_twitter_connected"
 		    android:defaultValue="false"/>
+		
+		<Preference
+			android:title="@string/prefs_clear_accounts_title"
+			android:key="@string/prefs_clear_accounts"
+			android:enabled="true"
+			android:summary="Use this to fix account issues." />
 	</PreferenceCategory>
 	<!-- 
 	<PreferenceCategory

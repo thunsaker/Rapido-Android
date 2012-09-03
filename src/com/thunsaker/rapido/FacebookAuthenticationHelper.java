@@ -1,4 +1,4 @@
-package com.thunsaker.rapido.android;
+package com.thunsaker.rapido;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
@@ -15,6 +16,7 @@ import com.facebook.android.Facebook.ServiceListener;
 import com.facebook.android.FacebookError;
 
 public class FacebookAuthenticationHelper {
+	final String TAG = getClass().getName();
 	public static Facebook facebook = new Facebook("YOUR_FACEBOOK_KEY");
 	private Activity myActivity;
 	private Context myContext;
@@ -39,16 +41,19 @@ public class FacebookAuthenticationHelper {
 	            @Override
 	            public void onFacebookError(FacebookError error) {
 	            	PreferencesHelper.setFacebookEnabled(myContext, false);
+	            	Log.d(TAG, error.getMessage());
 	            }
 
 	            @Override
 	            public void onError(DialogError e) {
 	            	PreferencesHelper.setFacebookEnabled(myContext, false);
+	            	Log.d(TAG, e.getMessage());
 	            }
 
 	            @Override
 	            public void onCancel() {
 	            	PreferencesHelper.setFacebookEnabled(myContext, false);
+	            	Log.d(TAG, "Cancelled Facebook Auth");
 	            }
 	        });
 	}

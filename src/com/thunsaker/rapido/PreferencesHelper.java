@@ -1,4 +1,4 @@
-package com.thunsaker.rapido.android;
+package com.thunsaker.rapido;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -20,6 +20,22 @@ public class PreferencesHelper {
         Editor prefsEditor = prefs.edit();
         prefsEditor.putBoolean(
                 context.getString(R.string.prefs_facebook_enabled),
+                newValue);
+        prefsEditor.commit();
+    }
+    
+    public static boolean getFacebookConnected(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        return prefs.getBoolean(
+                context.getString(R.string.prefs_facebook_connected),
+                false);
+    }
+ 
+    public static void setFacebookConnected(Context context, boolean newValue) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        Editor prefsEditor = prefs.edit();
+        prefsEditor.putBoolean(
+                context.getString(R.string.prefs_facebook_connected),
                 newValue);
         prefsEditor.commit();
     }
@@ -85,6 +101,22 @@ public class PreferencesHelper {
         Editor prefsEditor = prefs.edit();
         prefsEditor.putBoolean(
                 context.getString(R.string.prefs_twitter_enabled),
+                newValue);
+        prefsEditor.commit();
+    }
+    
+    public static boolean getTwitterConnected(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        return prefs.getBoolean(
+                context.getString(R.string.prefs_twitter_connected),
+                false);
+    }
+ 
+    public static void setTwitterConnected(Context context, boolean newValue) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        Editor prefsEditor = prefs.edit();
+        prefsEditor.putBoolean(
+                context.getString(R.string.prefs_twitter_connected),
                 newValue);
         prefsEditor.commit();
     }

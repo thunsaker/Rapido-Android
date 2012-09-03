@@ -1,4 +1,4 @@
-package com.thunsaker.rapido.android;
+package com.thunsaker.rapido;
 
 import java.io.IOException;
 
@@ -109,12 +109,15 @@ public class TwitterAuthorizationActivity extends SherlockActivity {
 								OAuthCredentialsResponse credentials = accessToken.execute();
 								PreferencesHelper.setTwitterToken(getApplicationContext(), credentials.token);
 								PreferencesHelper.setTwitterSecret(getApplicationContext(), credentials.tokenSecret);
+								PreferencesHelper.setTwitterEnabled(getApplicationContext(), true);
+								PreferencesHelper.setTwitterConnected(getApplicationContext(), true);
 								view.setVisibility(View.INVISIBLE);
 								startActivity(new Intent(getApplicationContext(), MainActivity.class));
 							} else if (url.indexOf("error=") != -1) {
 								view.setVisibility(View.INVISIBLE);
 								Log.i(TAG, "No match: " + url);
-								startActivity(new Intent(getApplicationContext(), MainActivity.class));
+								//startActivity(new Intent(getApplicationContext(), MainActivity.class));
+								finish();
 							}
 						} catch (IOException e) {
 							Log.i(TAG, "IOException: " + e.getMessage());
