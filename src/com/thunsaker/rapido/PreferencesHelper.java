@@ -1,5 +1,7 @@
 package com.thunsaker.rapido;
 
+import com.thunsaker.rapido.R;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;

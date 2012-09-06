@@ -3,7 +3,7 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">Rapido</string>
     <string name="title_activity_twitter">Twitter Authorization</string>
-    <string name="app_version_number">1.1</string>
+    <string name="app_version_number">1.1.1</string>
 
     <string name="label_update">Update:</string>
     <string name="twitter">Twitter</string>

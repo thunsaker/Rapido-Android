@@ -315,7 +315,7 @@ public class MainActivity extends SherlockActivity {
 
 		// TODO: Check for a URL, replace with a -20 character count if twitter is
 
-		if (mToggleButtonTwitter.isChecked()) {
+		if (mToggleButtonTwitter != null && mToggleButtonTwitter.isChecked()) {
 			limit = 140;
 		}
 

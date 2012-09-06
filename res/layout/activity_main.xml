@@ -28,7 +28,7 @@
         android:layout_marginTop="5dp"
 	    android:maxLines="3"
 	    android:text=""
-	    android:inputType="textMultiLine|textAutoCorrect"
+	    android:inputType="textMultiLine|textAutoCorrect|textCapSentences"
 	    android:gravity="top">
 	    <requestFocus />
     </EditText>
