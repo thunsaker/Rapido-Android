@@ -4,12 +4,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -54,7 +57,11 @@ public class MainActivity extends SherlockActivity {
 	private String STORAGE_FILENAME = "RAPIDO_STORAGE";
 
 	private FacebookAuthenticationHelper fbAuth;
+
 	static final int DIALOG_NO_INTERNETS_ID = 0;
+	
+	public static ProgressDialog loadingDialog;
+	public static ProgressDialog sendingDialog;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -67,23 +74,16 @@ public class MainActivity extends SherlockActivity {
 		fbAuth = new FacebookAuthenticationHelper(this, getApplicationContext());
 
 		// Get Prefs
-		facebookEnabled = PreferencesHelper
-				.getFacebookEnabled(getApplicationContext());
-		twitterEnabled = PreferencesHelper
-				.getTwitterEnabled(getApplicationContext());
+		facebookEnabled = PreferencesHelper.getFacebookEnabled(getApplicationContext());
+		twitterEnabled = PreferencesHelper.getTwitterEnabled(getApplicationContext());
 
-		facebookConnected = PreferencesHelper
-				.getFacebookConnected(getApplicationContext());
-		twitterConnected = PreferencesHelper
-				.getTwitterConnected(getApplicationContext());
-		submitOnEnter = PreferencesHelper
-				.getSendOnEnterEnabled(getApplicationContext());
+		facebookConnected = PreferencesHelper.getFacebookConnected(getApplicationContext());
+		twitterConnected = PreferencesHelper.getTwitterConnected(getApplicationContext());
+		submitOnEnter = PreferencesHelper.getSendOnEnterEnabled(getApplicationContext());
 
 		// Get Keys
-		FACEBOOK_KEY = PreferencesHelper
-				.getFacebookKey(getApplicationContext());
-		long expires = PreferencesHelper
-				.getFacebookExpiration(getApplicationContext());
+		FACEBOOK_KEY = PreferencesHelper.getFacebookKey(getApplicationContext());
+		long expires = PreferencesHelper.getFacebookExpiration(getApplicationContext());
 		if (FACEBOOK_KEY != null) {
 			fbAuth.SetAccessToken(FACEBOOK_KEY);
 
@@ -93,114 +93,45 @@ public class MainActivity extends SherlockActivity {
 				fbAuth.AuthenticateWithFacebook();
 		}
 
-		TWITTER_TOKEN = PreferencesHelper
-				.getTwitterToken(getApplicationContext());
-		TWITTER_TOKEN_SECRET = PreferencesHelper
-				.getTwitterSecret(getApplicationContext());
+		TWITTER_TOKEN = PreferencesHelper.getTwitterToken(getApplicationContext());
+		TWITTER_TOKEN_SECRET = PreferencesHelper.getTwitterSecret(getApplicationContext());
 
 		mTextView = (TextView) findViewById(R.id.TextViewCount);
 		mEditText = (EditText) findViewById(R.id.EditTextUpdate);
 		mEditText.addTextChangedListener(mTextEditorWatcher);
 
 		mToggleButtonFacebook = (ToggleButton) findViewById(R.id.ToggleButtonFacebook);
-		mToggleButtonFacebook
-				.setOnCheckedChangeListener(mFbCheckedChangeListener);
+		mToggleButtonFacebook.setOnCheckedChangeListener(mFbCheckedChangeListener);
 		if (facebookConnected)
 			mToggleButtonFacebook.setChecked(facebookEnabled);
 
 		mToggleButtonTwitter = (ToggleButton) findViewById(R.id.ToggleButtonTwitter);
-		mToggleButtonTwitter
-				.setOnCheckedChangeListener(mTwitterCheckedChangeListener);
+		mToggleButtonTwitter.setOnCheckedChangeListener(mTwitterCheckedChangeListener);
 		if (twitterConnected)
 			mToggleButtonTwitter.setChecked(twitterEnabled);
 
 		mButtonSend = (Button) findViewById(R.id.ButtonSend);
-		mButtonSend.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				try {
-					ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-					NetworkInfo activeNetworkInfo = connectivityManager
-							.getActiveNetworkInfo();
-					if (activeNetworkInfo != null) {
-						String update = mEditText.getText().toString();
-						int limit = 1000;
-						Boolean isTwitter = mToggleButtonTwitter.isChecked();
-						Boolean isFacebook = mToggleButtonFacebook.isChecked();
+		mButtonSend.setOnClickListener(mSendButtonClickListener);
 
-						if (isTwitter || isFacebook) {
-							if (isTwitter)
-								limit = 140;
+		Intent intentReceived = getIntent();
+		if (intentReceived != null) {
+			String action = intentReceived.getAction();
+			// String type = intentReceived.getType();
 
-							if (update.length() > 0 && update.length() < limit) {
-								if (isFacebook) {
-									String response = fbAuth.facebook
-											.request("me");
-									Bundle parameters = new Bundle();
-									parameters.putString("message", update);
-									parameters.putString("description",
-											"Posting from Rapido for Android");
-									response = fbAuth.facebook.request(
-											"me/feed", parameters, "POST");
-									if (response == null || response.equals("")
-											|| response.equals("false")) {
-										Toast.makeText(getApplicationContext(),
-												R.string.error_not_posted,
-												Toast.LENGTH_SHORT).show();
-									} else {
-										// Toast.makeText(getApplicationContext(),
-										// R.string.alert_posted_facebook,
-										// Toast.LENGTH_SHORT).show();
-										if (!isTwitter)
-											CloseApp();
-									}
-								}
-
-								if (isTwitter) {
-									try {
-										Boolean twitResult = TwitterHelper
-												.sendTweet(
-														getApplicationContext(),
-														update);
-										if (twitResult) {
-											// Toast.makeText(getApplicationContext(),
-											// R.string.alert_posted_twitter,
-											// Toast.LENGTH_SHORT).show();
-											CloseApp();
-										} else {
-											Toast.makeText(
-													getApplicationContext(),
-													"Twitter message not sent, try again",
-													Toast.LENGTH_SHORT).show();
-										}
-									} catch (Exception e) {
-										Toast.makeText(
-												getApplicationContext(),
-												"Twitter message not sent, try again",
-												Toast.LENGTH_SHORT).show();
-										Log.i(TAG,
-												"Exception: " + e.getMessage());
-									}
-								}
-							} else {
-								Toast.makeText(getApplicationContext(),
-										R.string.error_message_too_long,
-										Toast.LENGTH_SHORT).show();
-							}
-						} else {
-							Toast.makeText(getApplicationContext(),
-									R.string.error_no_services_selected,
-									Toast.LENGTH_SHORT).show();
-						}
-					} else {
-						// Show Dialog
-						showDialog(DIALOG_NO_INTERNETS_ID);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			if (Intent.ACTION_SEND.equals(action)) {
+				handleRecievedText(intentReceived);
 			}
-		});
+		}
+	}
+
+	private void handleRecievedText(Intent intent) {
+		String sentText = intent.getStringExtra(Intent.EXTRA_TEXT);
+		String sentTextTitle = intent.getStringExtra(Intent.EXTRA_TITLE);
+		String sentTextSubject = intent.getStringExtra(Intent.EXTRA_SUBJECT) != null ? String
+				.format("%s - ", intent.getStringExtra(Intent.EXTRA_SUBJECT))
+				: "";
+		mEditText.setText(String.format("%s%s", sentTextSubject, sentText));
+		updateCharacterCount(-1);
 	}
 
 	@Override
@@ -214,11 +145,8 @@ public class MainActivity extends SherlockActivity {
 			@Override
 			public boolean onMenuItemClick(
 					com.actionbarsherlock.view.MenuItem item) {
-				// Toast.makeText(getApplicationContext(), "Settings here!",
-				// Toast.LENGTH_SHORT).show();
 				saveDraft();
-				Intent preferencesIntent = new Intent(getApplicationContext(),
-						Preferences.class);
+				Intent preferencesIntent = new Intent(getApplicationContext(), Preferences.class);
 				startActivity(preferencesIntent);
 				return false;
 			}
@@ -230,16 +158,24 @@ public class MainActivity extends SherlockActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		fbAuth.ExtendAccessTokenIfNeeded(null);
+		if (fbAuth != null)
+			fbAuth.ExtendAccessTokenIfNeeded(null);
+
+		Intent intentReceived = getIntent();
+		if (intentReceived != null) {
+			String action = intentReceived.getAction();
+			String type = intentReceived.getType();
+
+			if (Intent.ACTION_SEND.equals(action) && type != null)
+				handleRecievedText(intentReceived);
+		}
 	}
 
 	private final TextWatcher mTextEditorWatcher = new TextWatcher() {
-		public void beforeTextChanged(CharSequence s, int start, int count,
-				int after) {
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 		}
 
-		public void onTextChanged(CharSequence s, int start, int before,
-				int count) {
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
 			updateCharacterCount(s.length());
 		}
 
@@ -247,26 +183,105 @@ public class MainActivity extends SherlockActivity {
 		}
 	};
 
+	private final View.OnClickListener mSendButtonClickListener = new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			try {
+				sendingDialog = ProgressDialog.show(
+						MainActivity.this, "Please wait...",
+						"Updating status...",
+						true, // Undefined progress
+						true, // Allow canceling of operation
+						new OnCancelListener() {
+							public void onCancel(
+									DialogInterface dialog) {
+								Toast.makeText(
+										getApplicationContext(),
+										getString(R.string.update_abort),
+										Toast.LENGTH_SHORT).show();
+							}
+						});
+				
+				ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+				NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+				if (activeNetworkInfo != null) {
+					String update = mEditText.getText().toString();
+					int limit = 1000;
+					Boolean isTwitter = mToggleButtonTwitter.isChecked();
+					Boolean isFacebook = mToggleButtonFacebook.isChecked();
+					int updateLength = update.length();
+
+					if (isTwitter || isFacebook) {
+						if (updateLength > 0) {
+							if (isTwitter) {
+								limit = 140;
+								
+								// If we are over 140 then check to see if we have links that can be shortened.
+								if (updateLength > limit) {
+									List<String> links = Util.GetLinksInText(update);
+
+									if (links != null && links.size() > 0) {
+										int linkCharacters = 0;
+										for (String linkString : links) {
+											linkCharacters += (linkString.length() - 20);
+										}
+
+										updateLength -= linkCharacters;
+									}
+								}
+							}
+
+							if (updateLength < limit) {
+								if (isFacebook) {
+									new FacebookHelper.UpdateStatus(getApplicationContext(), fbAuth, update, isTwitter).execute();
+									CloseApp();
+								}
+
+								if (isTwitter) {
+									try {
+										new TwitterHelper.SendTweet(getApplicationContext(), update).execute();
+										
+										//Boolean twitResult = TwitterHelper.sendTweet(getApplicationContext(), update);
+										CloseApp();
+									} catch (Exception e) {
+										Toast.makeText(getApplicationContext(), "Twitter message not sent, try again", Toast.LENGTH_SHORT).show();
+										Log.i(TAG, "Exception: " + e.getMessage());
+									}
+								}
+							} else {
+								Toast.makeText(getApplicationContext(), R.string.error_message_too_long, Toast.LENGTH_SHORT).show();
+							}
+						} else {
+							Toast.makeText(getApplicationContext(), R.string.error_no_message, Toast.LENGTH_SHORT).show();
+						}
+					} else {
+						Toast.makeText(getApplicationContext(), R.string.error_no_services_selected, Toast.LENGTH_SHORT).show();
+					}
+				} else {
+					// Show Dialog
+					showDialog(DIALOG_NO_INTERNETS_ID);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	};
+
 	// Twitter Toggle Button
 	private final OnCheckedChangeListener mTwitterCheckedChangeListener = new OnCheckedChangeListener() {
 		@Override
-		public void onCheckedChanged(CompoundButton buttonView,
-				boolean isChecked) {
+		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 			updateCharacterCount(-1);
 			saveDraft();
 			if (isChecked == true) {
-				if (TWITTER_TOKEN != null
-						&& PreferencesHelper
-								.getTwitterConnected(getApplicationContext())) {
+				if (TWITTER_TOKEN != null && PreferencesHelper.getTwitterConnected(getApplicationContext())) {
 					return;
 				} else {
 					ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-					NetworkInfo activeNetworkInfo = connectivityManager
-							.getActiveNetworkInfo();
+					NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 					if (activeNetworkInfo != null) {
 						// Launch Twitter Activity
-						Intent twitterAuth = new Intent(getApplicationContext(),
-								TwitterAuthorizationActivity.class);
+						Intent twitterAuth = new Intent(getApplicationContext(), TwitterAuthorizationActivity.class);
 						startActivity(twitterAuth);
 					} else {
 						// Show Dialog
@@ -281,19 +296,15 @@ public class MainActivity extends SherlockActivity {
 	// Facebook Toggle Button
 	private final OnCheckedChangeListener mFbCheckedChangeListener = new OnCheckedChangeListener() {
 		@Override
-		public void onCheckedChanged(CompoundButton buttonView,
-				boolean isChecked) {
+		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 			updateCharacterCount(-1);
 			saveDraft();
 			if (isChecked == true) {
-				if (FACEBOOK_KEY != null
-						&& PreferencesHelper
-								.getFacebookConnected(getApplicationContext())) {
+				if (FACEBOOK_KEY != null && PreferencesHelper.getFacebookConnected(getApplicationContext())) {
 					return;
 				} else {
 					ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-					NetworkInfo activeNetworkInfo = connectivityManager
-							.getActiveNetworkInfo();
+					NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 					if (activeNetworkInfo != null) {
 						fbAuth.AuthenticateWithFacebook();
 					} else {
@@ -309,14 +320,23 @@ public class MainActivity extends SherlockActivity {
 	private void updateCharacterCount(int length) {
 		String text = mEditText.getText().toString();
 		int limit = 1000;
-		if (length == -1) {
+		if (length == -1)
 			length = mEditText.length();
-		}
-
-		// TODO: Check for a URL, replace with a -20 character count if twitter is
 
 		if (mToggleButtonTwitter != null && mToggleButtonTwitter.isChecked()) {
 			limit = 140;
+			if (length > limit) {
+				List<String> links = Util.GetLinksInText(text);
+
+				if (links != null && links.size() > 0) {
+					int linkCharacters = 0;
+					for (String linkString : links) {
+						linkCharacters += (linkString.length() - 20);
+					}
+
+					length -= linkCharacters;
+				}
+			}
 		}
 
 		if (length > limit) {
@@ -331,8 +351,7 @@ public class MainActivity extends SherlockActivity {
 		try {
 			String draftMessage = mEditText.getText().toString();
 			if (draftMessage.length() > 0) {
-				FileOutputStream fos = openFileOutput(STORAGE_FILENAME,
-						Context.MODE_PRIVATE);
+				FileOutputStream fos = openFileOutput(STORAGE_FILENAME, Context.MODE_PRIVATE);
 				fos.write(draftMessage.getBytes());
 				fos.close();
 			}
@@ -368,6 +387,8 @@ public class MainActivity extends SherlockActivity {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		fbAuth.SetAuthorizeCallback(requestCode, resultCode, data);
+		
+		//TODO: See if the user cancelled or not, and set the facebook checkbox accordingly
 	}
 
 	@Override
@@ -397,13 +418,10 @@ public class MainActivity extends SherlockActivity {
 	}
 
 	public void CloseApp() {
-		Toast.makeText(getApplicationContext(), "Message posted successfully!",
-				Toast.LENGTH_SHORT).show();
+		sendingDialog.dismiss();
+		Toast.makeText(getApplicationContext(), "Message posted successfully!", Toast.LENGTH_SHORT).show();
 		mEditText.setText("");
 		clearDraft();
 		finish();
 	}
-	/*
-	 * private String ParseUrl(String text){ java.util.regex. }
-	 */
 }

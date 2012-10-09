@@ -1,14 +1,17 @@
 package com.thunsaker.rapido;
 
-import java.io.IOException;
-
-import android.content.Intent;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
@@ -29,9 +32,12 @@ public class TwitterAuthorizationActivity extends SherlockActivity {
 	public final static String TWIT_SECRET = "YOUR_TWITTER_SECRET";
 	public final static String OAUTH_CALLBACK_URL = "YOUR_CALLBACK_URL";
 	
-	public static final String REQUEST_URL = "http://api.twitter.com/oauth/request_token";
-	public static final String ACCESS_URL = "http://api.twitter.com/oauth/access_token";
-	public static final String AUTHORIZE_URL = "http://api.twitter.com/oauth/authorize";
+	public static final String REQUEST_URL = "https://api.twitter.com/oauth/request_token";
+	public static final String ACCESS_URL = "https://api.twitter.com/oauth/access_token";
+	public static final String AUTHORIZE_URL = "https://api.twitter.com/oauth/authorize";
+	
+	public ProgressDialog loadingDialog;
+	public Boolean isTempTokenSet;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,39 +62,46 @@ public class TwitterAuthorizationActivity extends SherlockActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		WebView webView = new WebView(this);
-		webView.getSettings().setJavaScriptEnabled(true);
-		webView.setVisibility(View.VISIBLE);
-		setContentView(webView);
 		
-		final OAuthHmacSigner signer = new OAuthHmacSigner();
-		signer.clientSharedSecret = TWIT_SECRET;
+		loadingDialog = ProgressDialog.show(
+			TwitterAuthorizationActivity.this, "Please wait...",
+			"Loading Twitter Authorization",
+			true, // Undefined progress
+			true, // Allow canceling of operation
+			new OnCancelListener() {
+				public void onCancel(
+						DialogInterface dialog) {
+					Toast.makeText(
+							getApplicationContext(),
+							getString(R.string.twitter_auth_cancelled),
+							Toast.LENGTH_SHORT).show();
+				}
+			});
 		
-		OAuthGetTemporaryToken tempToken = new OAuthGetTemporaryToken(REQUEST_URL);
-		tempToken.transport = new ApacheHttpTransport();
-		tempToken.signer = signer;
-		tempToken.consumerKey = TWIT_KEY;
-		tempToken.callback = OAUTH_CALLBACK_URL;
-		
+		new TempTokenFetcher(TwitterAuthorizationActivity.this, this).execute();
+	}
+	
+	public void SetupTwitterAuthorization(OAuthHmacSigner theSigner, OAuthCredentialsResponse theTempCredentials){
 		try {
-			OAuthCredentialsResponse tempCredentials = tempToken.execute();
-			signer.tokenSharedSecret = tempCredentials.tokenSecret;
+			WebView webView = new WebView(this);
+			webView.getSettings().setJavaScriptEnabled(true);
+			webView.setClickable(true);
+			webView.setVisibility(View.VISIBLE);
+			setContentView(webView);
+			final OAuthHmacSigner mySigner = theSigner;
 			
 			OAuthAuthorizeTemporaryTokenUrl authorizeUrl = new OAuthAuthorizeTemporaryTokenUrl(AUTHORIZE_URL);
-			authorizeUrl.temporaryToken = tempCredentials.token;
+			authorizeUrl.temporaryToken = theTempCredentials.token;
 			String authorizationUrl = authorizeUrl.build();
 			webView.setWebViewClient(new WebViewClient(){
 				@Override
 				public void onPageStarted(WebView view, String url,
 						Bitmap favicon) {
-					Log.i(TAG, "Url started: " + url);
 				}
 				
 				@Override
 				public void onPageFinished(WebView view, String url) {
-					Log.i(TAG, "On Page Finished: " + url);
 					if(url.startsWith(OAUTH_CALLBACK_URL)){
-						Log.i(TAG, "After Url Match: " + url);
 						try {
 							if(url.indexOf("oauth_token=") != -1) {
 								PreferencesHelper.setTwitterToken(getApplicationContext(), "");
@@ -96,30 +109,23 @@ public class TwitterAuthorizationActivity extends SherlockActivity {
 								
 								String requestToken = extractParamFromUrl(url, "oauth_token");
 								String verifier = extractParamFromUrl(url, "oauth_verifier");
-								Log.i(TAG, "My Tokens: " + requestToken + ", " + verifier);
-								signer.clientSharedSecret = TWIT_SECRET;
+								mySigner.clientSharedSecret = TWIT_SECRET;
 								
 								OAuthGetAccessToken accessToken = new OAuthGetAccessToken(ACCESS_URL);
 								accessToken.transport = new ApacheHttpTransport();
 								accessToken.temporaryToken = requestToken;
-								accessToken.signer = signer;
+								accessToken.signer = mySigner;
 								accessToken.consumerKey = TWIT_KEY;
 								accessToken.verifier = verifier;
-							
-								OAuthCredentialsResponse credentials = accessToken.execute();
-								PreferencesHelper.setTwitterToken(getApplicationContext(), credentials.token);
-								PreferencesHelper.setTwitterSecret(getApplicationContext(), credentials.tokenSecret);
-								PreferencesHelper.setTwitterEnabled(getApplicationContext(), true);
-								PreferencesHelper.setTwitterConnected(getApplicationContext(), true);
-								view.setVisibility(View.INVISIBLE);
-								startActivity(new Intent(getApplicationContext(), MainActivity.class));
+									
+								new TwitterHelper.TokenFetcher(TwitterAuthorizationActivity.this, accessToken).execute();
+								finish();
 							} else if (url.indexOf("error=") != -1) {
 								view.setVisibility(View.INVISIBLE);
 								Log.i(TAG, "No match: " + url);
-								//startActivity(new Intent(getApplicationContext(), MainActivity.class));
 								finish();
 							}
-						} catch (IOException e) {
+						} catch (Exception e) {
 							Log.i(TAG, "IOException: " + e.getMessage());
 							e.printStackTrace();
 						}
@@ -128,7 +134,9 @@ public class TwitterAuthorizationActivity extends SherlockActivity {
 			});
 			
 			webView.loadUrl(authorizationUrl);
-		} catch (IOException e) {
+			webView.requestFocus();
+			loadingDialog.dismiss();
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 		}
@@ -138,5 +146,44 @@ public class TwitterAuthorizationActivity extends SherlockActivity {
 		String queryString = url.substring(url.indexOf("?", 0)+1,url.length());
 		QueryStringParser queryStringParser = new QueryStringParser(queryString);
 		return queryStringParser.getQueryParamValue(paramName);
-	}  
+	}
+	
+	public class TempTokenFetcher extends AsyncTask<Void, Integer, Boolean> {
+		Context myContext;
+		TwitterAuthorizationActivity myCaller = null;
+		final OAuthHmacSigner signer = new OAuthHmacSigner();
+		OAuthCredentialsResponse tempCredentials;
+		
+		public TempTokenFetcher(Context theContext, TwitterAuthorizationActivity theCaller) {
+			myContext = theContext;
+			myCaller = theCaller;
+		}
+		
+		
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			try {
+				signer.clientSharedSecret = TWIT_SECRET;
+				
+				OAuthGetTemporaryToken tempToken = new OAuthGetTemporaryToken(REQUEST_URL);		
+				tempToken.transport = new ApacheHttpTransport();
+				tempToken.signer = signer;
+				tempToken.consumerKey = TWIT_KEY;
+				tempToken.callback = OAUTH_CALLBACK_URL;
+				
+				tempCredentials = tempToken.execute();
+				signer.tokenSharedSecret = tempCredentials.tokenSecret;
+			} catch (Exception e) {
+				e.printStackTrace();
+				isTempTokenSet = false;
+			}
+			return isTempTokenSet;
+		}
+		
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+			myCaller.SetupTwitterAuthorization(signer, tempCredentials);
+		}
+	}
 }
