@@ -17,7 +17,7 @@ import com.facebook.android.FacebookError;
 
 public class FacebookAuthenticationHelper {
 	final String TAG = getClass().getName();
-	public static Facebook facebook = new Facebook("YOUR_FACEBOOK_KEY");
+	public static Facebook facebook = new Facebook("YOUR_FACEBOOK_APP_ID");
 	private Activity myActivity;
 	private Context myContext;
 	

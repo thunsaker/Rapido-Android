@@ -1,7 +1,5 @@
 package com.thunsaker.rapido;
 
-import com.thunsaker.rapido.R;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -172,4 +170,21 @@ public class PreferencesHelper {
                 newValue);
         prefsEditor.commit();
     }
+
+//	public static OAuthGetTemporaryToken getTwitterTempToken(Context context, OAuthGetTemporaryToken tempToken) {
+//		SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+//        return prefs.get.getClass(
+//                context.getString(R.string.prefs_twitter_token_temp),
+//                null);
+//		
+//	}
+//	
+//	public static void setTwitterTempToken(Context context, OAuthGetTemporaryToken tempToken) {
+//		SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+//        Editor prefsEditor = prefs.edit();
+//        prefsEditor.putBoolean(
+//                context.getString(R.string.prefs_twitter_token_temp),
+//                newValue);
+//        prefsEditor.commit(); 
+//	}
 }

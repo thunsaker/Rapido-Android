@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.thunsaker.rapido"
-    android:versionCode="2"
+    android:versionCode="3"
     android:versionName="@string/app_version_number">
 
     <uses-sdk
@@ -15,23 +15,25 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.Styled">
         <activity
-            android:name="com.thunsaker.rapido.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/title_activity_main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+				<action android:name="android.intent.action.SEND" />
+                <data android:mimeType="text/*" />
+            </intent-filter>
         </activity>
         
         <activity
-            android:name="com.thunsaker.rapido.TwitterAuthorizationActivity"
-            android:label="@string/title_activity_twitter">
-            <!-- 
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
-            -->
-        </activity>
-        <activity android:name="com.thunsaker.rapido.Preferences" />
+            android:name=".TwitterAuthorizationActivity"
+            android:label="@string/title_activity_twitter" />
+        <activity 
+            android:name=".BitlyAuthorizationActivity"
+            android:label="@string/title_activity_bitly" />
+        <activity android:name=".Preferences" />
     </application>
 </manifest>
