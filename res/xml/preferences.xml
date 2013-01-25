@@ -5,20 +5,77 @@
 		<CheckBoxPreference 
 		    android:title="@string/prefs_facebook_title"
 		    android:key="@string/prefs_facebook_connected"
-		    android:defaultValue="false"/>
+		    android:defaultValue="false"
+		    android:disableDependentsState="false"
+		    android:summaryOn="@string/prefs_facebook_title_connected" />
+		
+		<CheckBoxPreference
+		    android:dependency="@string/prefs_facebook_connected"
+		    android:title="@string/prefs_facebook_hashtags_title" 
+		    android:key="@string/prefs_facebook_hashtags"
+		    android:defaultValue="false"
+		    android:summaryOn="@string/prefs_facebook_hashtags_summary_on" 
+		    android:summaryOff="@string/prefs_facebook_hashtags_summary_off" />
 		
 		<CheckBoxPreference
 		    android:title="@string/prefs_twitter_title"
 		    android:key="@string/prefs_twitter_connected"
-		    android:defaultValue="false"/>
+		    android:defaultValue="false"
+		    android:summaryOn="@string/prefs_twitter_title_connected" />
+
+<!-- 	    <PreferenceCategory
+		    android:title="@string/prefs_bitly_title"
+		    android:summary="@string/prefs_bitly_title_summary"> -->
+			<CheckBoxPreference 
+			    android:title="@string/prefs_bitly_title_connect"
+			    android:key="@string/prefs_bitly_connected"
+			    android:defaultValue="false"
+		    	android:summaryOn="@string/prefs_bitly_title_connected" />
+<!-- 			<ListPreference
+			    android:title="@string/prefs_bitly_title_shorten_domain"
+			    android:key="@string/prefs_bitly_shorten_domain"
+			    android:defaultValue="@string/prefs_bitly_title_shorten_domain_bitly"
+			    android:entries="@array/prefs_bitly_title_shorten_domain_entries"
+			    android:dialogTitle="@string/prefs_bitly_title_shorten_domain"
+			    android:entryValues="@array/prefs_bitly_title_shorten_domain_entryValues" />
+			<CheckBoxPreference
+			    android:title="@string/prefs_bitly_title_shorten_facebook"
+			    android:key="@string/prefs_bitly_shorten_facebook"
+			    android:defaultValue="true"/>
+			<CheckBoxPreference
+			    android:title="@string/prefs_bitly_title_shorten_twitter"
+			    android:key="@string/prefs_bitly_shorten_twitter"
+			    android:defaultValue="true"/> -->
+		<!-- </PreferenceCategory> -->
 		
-		<Preference
+	    <Preference
 			android:title="@string/prefs_clear_accounts_title"
 			android:key="@string/prefs_clear_accounts"
 			android:enabled="true"
 			android:summary="Use this to fix account issues." />
 	</PreferenceCategory>
-	<!-- 
+	
+<!--<PreferenceCategory
+        android:title="@string/prefs_category_misc_title" >
+        <CheckBoxPreference
+            android:title="@string/prefs_misc_black_title"
+            android:key="@string/prefs_misc_black"
+            android:defaultValue="false" />
+    </PreferenceCategory> -->
+    
+    <PreferenceCategory
+	    android:title="@string/prefs_category_title_about">
+	    <Preference 
+	        android:title="@string/prefs_about_version_title"
+	        android:summary="@string/app_version_number" />
+	    <Preference 
+	        android:title="@string/prefs_about_rate_title"
+	        android:key="@string/prefs_about_rate"
+	        android:summary="@string/prefs_about_rate_summary" />
+	</PreferenceCategory>
+</PreferenceScreen>
+
+<!-- 
 	<PreferenceCategory
 	    android:title="@string/prefs_category_application_settings">
 		<CheckBoxPreference
@@ -27,5 +84,4 @@
 		    android:summaryOn="@string/prefs_sendOnEnter_summary_on"
 		    android:summaryOff=""/>
 	</PreferenceCategory>
-	 -->
-</PreferenceScreen>
+-->

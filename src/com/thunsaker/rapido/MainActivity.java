@@ -8,15 +8,18 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -32,6 +35,7 @@ import android.widget.ToggleButton;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.MenuItem.OnMenuItemClickListener;
+import com.thunsaker.rapido.classes.Draft;
 
 public class MainActivity extends SherlockActivity {
 	final String TAG = getClass().getName();
@@ -54,7 +58,16 @@ public class MainActivity extends SherlockActivity {
 	private String TWITTER_TOKEN = "";
 	private String TWITTER_TOKEN_SECRET = "";
 
-	private String STORAGE_FILENAME = "RAPIDO_STORAGE";
+	public static String STORAGE_FILENAME = "RAPIDO_STORAGE";
+	
+	public static String REPOST_FACEBOOK = "RAPIDO_REPOST_FACEBOOK";
+	public static String REPOST_TWITTER = "RAPIDO_REPOST_TWITTER";
+	public static String REPOST_BOTH = "RAPIDO_REPOST_BOTH";
+	private String REPOST_START_TEXT = "RAPIDO_REPOST";
+	
+	public static String DRAFT_TWITTER = "RAPIDO_DRAFT_TWITTER";
+	public static String DRAFT_FACEBOOK = "RAPIDO_DRAFT_FACEBOOK";
+	public static String DRAFT_GENERIC = "RAPIDO_DRAFT_GENERIC";
 
 	private FacebookAuthenticationHelper fbAuth;
 
@@ -62,6 +75,13 @@ public class MainActivity extends SherlockActivity {
 	
 	public static ProgressDialog loadingDialog;
 	public static ProgressDialog sendingDialog;
+	
+	public static final int RAPIDO_NOTIFICATION = 0;
+	public static final int FACEBOOK_NOTIFICATION = 1;
+	public static final int TWITTER_NOTIFICATION = 2;
+	public static final int BITLY_NOTIFICATION = 3;
+	public static Intent genericIntent;
+	public static PendingIntent genericPendingIntent;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -116,22 +136,52 @@ public class MainActivity extends SherlockActivity {
 		Intent intentReceived = getIntent();
 		if (intentReceived != null) {
 			String action = intentReceived.getAction();
-			// String type = intentReceived.getType();
-
 			if (Intent.ACTION_SEND.equals(action)) {
 				handleRecievedText(intentReceived);
 			}
 		}
+		
+		genericIntent = new Intent(getApplicationContext(), MainActivity.class);
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+		stackBuilder.addParentStack(MainActivity.class);
+		stackBuilder.addNextIntent(genericIntent);
+		genericPendingIntent = 
+		        stackBuilder.getPendingIntent(
+		            0,
+		            PendingIntent.FLAG_UPDATE_CURRENT
+		        );
 	}
 
 	private void handleRecievedText(Intent intent) {
 		String sentText = intent.getStringExtra(Intent.EXTRA_TEXT);
-		String sentTextTitle = intent.getStringExtra(Intent.EXTRA_TITLE);
-		String sentTextSubject = intent.getStringExtra(Intent.EXTRA_SUBJECT) != null ? String
-				.format("%s - ", intent.getStringExtra(Intent.EXTRA_SUBJECT))
-				: "";
-		mEditText.setText(String.format("%s%s", sentTextSubject, sentText));
+		String textToPost = "";
+		
+		// Check to see if it is a repost, instead of just a received intent.
+		if(sentText.startsWith(REPOST_START_TEXT)) {
+			if(sentText.startsWith(REPOST_BOTH)) {
+				textToPost = sentText.replace(REPOST_BOTH + " ", "");
+				mToggleButtonFacebook.setChecked(true);
+				mToggleButtonTwitter.setChecked(true);
+			} else if (sentText.startsWith(REPOST_FACEBOOK)) {
+				textToPost = sentText.replace(REPOST_FACEBOOK + " ", "");
+				mToggleButtonFacebook.setChecked(true);
+				mToggleButtonTwitter.setChecked(false);
+			} else if (sentText.startsWith(REPOST_TWITTER)) {
+				textToPost = sentText.replace(REPOST_TWITTER + " ", "");
+				mToggleButtonFacebook.setChecked(false);
+				mToggleButtonTwitter.setChecked(true);
+			}
+		} else {
+			//String sentTextTitle = intent.getStringExtra(Intent.EXTRA_TITLE);
+			String sentTextSubject = 
+					intent.getStringExtra(Intent.EXTRA_SUBJECT) != null 
+					? String.format("%s - ", intent.getStringExtra(Intent.EXTRA_SUBJECT)) 
+							: "";
+			textToPost = String.format("%s%s", sentTextSubject, sentText);
+		}
+		mEditText.setText(textToPost);
 		updateCharacterCount(-1);
+		
 	}
 
 	@Override
@@ -145,8 +195,11 @@ public class MainActivity extends SherlockActivity {
 			@Override
 			public boolean onMenuItemClick(
 					com.actionbarsherlock.view.MenuItem item) {
-				saveDraft();
-				Intent preferencesIntent = new Intent(getApplicationContext(), Preferences.class);
+				EditText myEditText = (EditText) findViewById(R.id.EditTextUpdate);
+				String myDraftMessage = myEditText.getText().toString();
+				Draft myDraft = new Draft(myDraftMessage);
+				MainActivity.saveDraft(MainActivity.DRAFT_GENERIC, myDraft, getApplicationContext());
+				Intent preferencesIntent = new Intent(getApplicationContext(), PreferencesActivity.class);
 				startActivity(preferencesIntent);
 				return false;
 			}
@@ -166,8 +219,13 @@ public class MainActivity extends SherlockActivity {
 			String action = intentReceived.getAction();
 			String type = intentReceived.getType();
 
-			if (Intent.ACTION_SEND.equals(action) && type != null)
+			if (Intent.ACTION_SEND.equals(action) && type != null) {
 				handleRecievedText(intentReceived);
+			} else if(intentReceived.getStringExtra(Intent.EXTRA_TEXT) != null) {
+				if(intentReceived.getStringExtra(Intent.EXTRA_TEXT).startsWith(REPOST_START_TEXT)) {
+					handleRecievedText(intentReceived);
+				}
+			}
 		}
 	}
 
@@ -187,20 +245,21 @@ public class MainActivity extends SherlockActivity {
 		@Override
 		public void onClick(View v) {
 			try {
-				sendingDialog = ProgressDialog.show(
-						MainActivity.this, "Please wait...",
-						"Updating status...",
-						true, // Undefined progress
-						true, // Allow canceling of operation
-						new OnCancelListener() {
-							public void onCancel(
-									DialogInterface dialog) {
-								Toast.makeText(
-										getApplicationContext(),
-										getString(R.string.update_abort),
-										Toast.LENGTH_SHORT).show();
-							}
-						});
+				NotificationManager mNotificationManager = 
+						(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				
+				NotificationCompat.Builder mNotificationFacebook = 
+						new NotificationCompat.Builder(getApplicationContext())
+							.setSmallIcon(R.drawable.ic_stat_rapido)
+							.setContentTitle(getString(R.string.alert_title))
+							.setContentText(getString(R.string.alert_posting_facebook))
+							.setContentIntent(genericPendingIntent);
+				NotificationCompat.Builder mNotificationTwitter = 
+						new NotificationCompat.Builder(getApplicationContext())
+							.setSmallIcon(R.drawable.ic_stat_rapido)
+							.setContentTitle(getString(R.string.alert_title))
+							.setContentText(getString(R.string.alert_posting_twitter))
+							.setContentIntent(genericPendingIntent);
 				
 				ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 				NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
@@ -209,6 +268,7 @@ public class MainActivity extends SherlockActivity {
 					int limit = 1000;
 					Boolean isTwitter = mToggleButtonTwitter.isChecked();
 					Boolean isFacebook = mToggleButtonFacebook.isChecked();
+					Boolean isBitlyEnabled = PreferencesHelper.getBitlyConnected(getApplicationContext());
 					int updateLength = update.length();
 
 					if (isTwitter || isFacebook) {
@@ -232,22 +292,19 @@ public class MainActivity extends SherlockActivity {
 							}
 
 							if (updateLength < limit) {
-								if (isFacebook) {
-									new FacebookHelper.UpdateStatus(getApplicationContext(), fbAuth, update, isTwitter).execute();
-									CloseApp();
+								if(isFacebook) {
+									Log.i(TAG, "Starting facebook update");
+									mNotificationManager.notify(FACEBOOK_NOTIFICATION, mNotificationFacebook.getNotification());
+									new Util.UpdateStatus(getApplicationContext(), Util.FACEBOOK_UPDATE, update, fbAuth, isBitlyEnabled).execute();
 								}
-
-								if (isTwitter) {
-									try {
-										new TwitterHelper.SendTweet(getApplicationContext(), update).execute();
-										
-										//Boolean twitResult = TwitterHelper.sendTweet(getApplicationContext(), update);
-										CloseApp();
-									} catch (Exception e) {
-										Toast.makeText(getApplicationContext(), "Twitter message not sent, try again", Toast.LENGTH_SHORT).show();
-										Log.i(TAG, "Exception: " + e.getMessage());
-									}
+								
+								if(isTwitter) {
+									Log.i(TAG, "Starting twitter update");
+									mNotificationManager.notify(TWITTER_NOTIFICATION, mNotificationTwitter.getNotification());
+									new Util.UpdateStatus(getApplicationContext(), Util.TWITTER_UPDATE, update, null, isBitlyEnabled).execute();
 								}
+								
+								CloseApp();
 							} else {
 								Toast.makeText(getApplicationContext(), R.string.error_message_too_long, Toast.LENGTH_SHORT).show();
 							}
@@ -258,7 +315,6 @@ public class MainActivity extends SherlockActivity {
 						Toast.makeText(getApplicationContext(), R.string.error_no_services_selected, Toast.LENGTH_SHORT).show();
 					}
 				} else {
-					// Show Dialog
 					showDialog(DIALOG_NO_INTERNETS_ID);
 				}
 			} catch (Exception e) {
@@ -272,7 +328,10 @@ public class MainActivity extends SherlockActivity {
 		@Override
 		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 			updateCharacterCount(-1);
-			saveDraft();
+			EditText myEditText = (EditText) findViewById(R.id.EditTextUpdate); 
+			String myDraftMessage = myEditText.getText().toString();
+			Draft myDraft = new Draft(myDraftMessage);
+			MainActivity.saveDraft(MainActivity.DRAFT_GENERIC, myDraft, getApplicationContext());
 			if (isChecked == true) {
 				if (TWITTER_TOKEN != null && PreferencesHelper.getTwitterConnected(getApplicationContext())) {
 					return;
@@ -298,7 +357,10 @@ public class MainActivity extends SherlockActivity {
 		@Override
 		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 			updateCharacterCount(-1);
-			saveDraft();
+			EditText myEditText = (EditText) findViewById(R.id.EditTextUpdate); 
+			String myDraftMessage = myEditText.getText().toString();
+			Draft myDraft = new Draft(myDraftMessage);
+			MainActivity.saveDraft(MainActivity.DRAFT_GENERIC, myDraft, getApplicationContext());
 			if (isChecked == true) {
 				if (FACEBOOK_KEY != null && PreferencesHelper.getFacebookConnected(getApplicationContext())) {
 					return;
@@ -347,33 +409,31 @@ public class MainActivity extends SherlockActivity {
 		mTextView.setText(String.valueOf(length - limit));
 	}
 
-	private void saveDraft() {
+	public static void saveDraft(String draftKey, Draft myDraft, Context myContext) {
 		try {
-			String draftMessage = mEditText.getText().toString();
-			if (draftMessage.length() > 0) {
-				FileOutputStream fos = openFileOutput(STORAGE_FILENAME, Context.MODE_PRIVATE);
-				fos.write(draftMessage.getBytes());
+			if(myDraft != null) {
+				FileOutputStream fos = myContext.openFileOutput(STORAGE_FILENAME, Context.MODE_PRIVATE);
+				fos.write(myDraft.toString().getBytes());
 				fos.close();
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	private void clearDraft() {
-		deleteFile(STORAGE_FILENAME);
+	public static void clearDraft(String draftKey, Context myContext) {
+		myContext.deleteFile(STORAGE_FILENAME);
 	}
 
-	private String getDraft() {
+	public static Draft getDraft(String draftKey, Context myContext) {
 		try {
 			String readString = null;
-			FileInputStream fis = openFileInput(STORAGE_FILENAME);
+			FileInputStream fis = myContext.openFileInput(STORAGE_FILENAME);
 			fis.read(readString.getBytes());
 			fis.close();
-			return readString;
+			return Draft.GetDraftFromJson(readString);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return null;
@@ -418,10 +478,7 @@ public class MainActivity extends SherlockActivity {
 	}
 
 	public void CloseApp() {
-		sendingDialog.dismiss();
-		Toast.makeText(getApplicationContext(), "Message posted successfully!", Toast.LENGTH_SHORT).show();
 		mEditText.setText("");
-		clearDraft();
 		finish();
 	}
 }

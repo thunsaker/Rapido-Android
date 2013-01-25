@@ -86,7 +86,23 @@ public class PreferencesHelper {
                 context.getString(R.string.prefs_facebook_name),
                 newValue);
         prefsEditor.commit();
-    }    
+    }
+    
+    public static boolean getFacebookDeleteHashtags(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        return prefs.getBoolean(
+                context.getString(R.string.prefs_facebook_hashtags),
+                false);
+    }
+ 
+    public static void setFacebookDeleteHashtags(Context context, boolean newValue) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        Editor prefsEditor = prefs.edit();
+        prefsEditor.putBoolean(
+                context.getString(R.string.prefs_facebook_hashtags),
+                newValue);
+        prefsEditor.commit();
+    }
     
     // Twitter Prefs
     public static boolean getTwitterEnabled(Context context) {
@@ -153,6 +169,71 @@ public class PreferencesHelper {
         prefsEditor.commit();
     }
     
+    // Bit.ly Prefs
+    public static boolean getBitlyConnected(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        return prefs.getBoolean(
+                context.getString(R.string.prefs_bitly_connected),
+                false);
+    }
+ 
+    public static void setBitlyConnected(Context context, boolean newValue) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        Editor prefsEditor = prefs.edit();
+        prefsEditor.putBoolean(
+                context.getString(R.string.prefs_bitly_connected),
+                newValue);
+        prefsEditor.commit();
+    }
+    
+    public static String getBitlyToken(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        return prefs.getString(
+                context.getString(R.string.prefs_bitly_token),
+                null);
+    }
+ 
+    public static void setBitlyToken(Context context, String newValue) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        Editor prefsEditor = prefs.edit();
+        prefsEditor.putString(
+                context.getString(R.string.prefs_bitly_token),
+                newValue);
+        prefsEditor.commit();
+    }
+    
+    public static String getBitlyApiKey(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        return prefs.getString(
+                context.getString(R.string.prefs_bitly_apikey),
+                null);
+    }
+ 
+    public static void setBitlyApiKey(Context context, String newValue) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        Editor prefsEditor = prefs.edit();
+        prefsEditor.putString(
+                context.getString(R.string.prefs_bitly_apikey),
+                newValue);
+        prefsEditor.commit();
+    }
+    
+    public static String getBitlyLogin(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        return prefs.getString(
+                context.getString(R.string.prefs_bitly_login),
+                null);
+    }
+ 
+    public static void setBitlyLogin(Context context, String newValue) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        Editor prefsEditor = prefs.edit();
+        prefsEditor.putString(
+                context.getString(R.string.prefs_bitly_login),
+                newValue);
+        prefsEditor.commit();
+    }
+    
     
     // Misc Prefs
     public static boolean getSendOnEnterEnabled(Context context) {
@@ -170,21 +251,4 @@ public class PreferencesHelper {
                 newValue);
         prefsEditor.commit();
     }
-
-//	public static OAuthGetTemporaryToken getTwitterTempToken(Context context, OAuthGetTemporaryToken tempToken) {
-//		SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-//        return prefs.get.getClass(
-//                context.getString(R.string.prefs_twitter_token_temp),
-//                null);
-//		
-//	}
-//	
-//	public static void setTwitterTempToken(Context context, OAuthGetTemporaryToken tempToken) {
-//		SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-//        Editor prefsEditor = prefs.edit();
-//        prefsEditor.putBoolean(
-//                context.getString(R.string.prefs_twitter_token_temp),
-//                newValue);
-//        prefsEditor.commit(); 
-//	}
 }

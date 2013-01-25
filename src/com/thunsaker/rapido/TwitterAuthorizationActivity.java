@@ -27,10 +27,6 @@ public class TwitterAuthorizationActivity extends SherlockActivity {
 	
 	private boolean useLogo = true;
     private boolean showHomeUp = true;
-    
-	public final static String TWIT_KEY = "YOUR_TWITTER_KEY";
-	public final static String TWIT_SECRET = "YOUR_TWITTER_SECRET";
-	public final static String OAUTH_CALLBACK_URL = "YOUR_CALLBACK_URL";
 	
 	public static final String REQUEST_URL = "https://api.twitter.com/oauth/request_token";
 	public static final String ACCESS_URL = "https://api.twitter.com/oauth/access_token";
@@ -64,20 +60,19 @@ public class TwitterAuthorizationActivity extends SherlockActivity {
 		super.onResume();
 		
 		loadingDialog = ProgressDialog.show(
-			TwitterAuthorizationActivity.this, "Please wait...",
-			"Loading Twitter Authorization",
+			TwitterAuthorizationActivity.this, getString(R.string.dialog_please_wait),
+			String.format(getString(R.string.dialog_loading), getString(R.string.twitter)),
 			true, // Undefined progress
 			true, // Allow canceling of operation
 			new OnCancelListener() {
-				public void onCancel(
-						DialogInterface dialog) {
+				public void onCancel(DialogInterface dialog) {
 					Toast.makeText(
 							getApplicationContext(),
-							getString(R.string.twitter_auth_cancelled),
+							getString(R.string.auth_cancelled),
 							Toast.LENGTH_SHORT).show();
 				}
 			});
-		
+
 		new TempTokenFetcher(TwitterAuthorizationActivity.this, this).execute();
 	}
 	
@@ -101,7 +96,7 @@ public class TwitterAuthorizationActivity extends SherlockActivity {
 				
 				@Override
 				public void onPageFinished(WebView view, String url) {
-					if(url.startsWith(OAUTH_CALLBACK_URL)){
+					if(url.startsWith(AuthHelper.OAUTH_CALLBACK_URL)){
 						try {
 							if(url.indexOf("oauth_token=") != -1) {
 								PreferencesHelper.setTwitterToken(getApplicationContext(), "");
@@ -109,15 +104,15 @@ public class TwitterAuthorizationActivity extends SherlockActivity {
 								
 								String requestToken = extractParamFromUrl(url, "oauth_token");
 								String verifier = extractParamFromUrl(url, "oauth_verifier");
-								mySigner.clientSharedSecret = TWIT_SECRET;
+								mySigner.clientSharedSecret = AuthHelper.TWIT_SECRET;
 								
 								OAuthGetAccessToken accessToken = new OAuthGetAccessToken(ACCESS_URL);
 								accessToken.transport = new ApacheHttpTransport();
 								accessToken.temporaryToken = requestToken;
 								accessToken.signer = mySigner;
-								accessToken.consumerKey = TWIT_KEY;
+								accessToken.consumerKey = AuthHelper.TWIT_KEY;
 								accessToken.verifier = verifier;
-									
+
 								new TwitterHelper.TokenFetcher(TwitterAuthorizationActivity.this, accessToken).execute();
 								finish();
 							} else if (url.indexOf("error=") != -1) {
@@ -163,13 +158,13 @@ public class TwitterAuthorizationActivity extends SherlockActivity {
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			try {
-				signer.clientSharedSecret = TWIT_SECRET;
-				
-				OAuthGetTemporaryToken tempToken = new OAuthGetTemporaryToken(REQUEST_URL);		
+				signer.clientSharedSecret = AuthHelper.TWIT_SECRET;
+
+				OAuthGetTemporaryToken tempToken = new OAuthGetTemporaryToken(REQUEST_URL);
 				tempToken.transport = new ApacheHttpTransport();
 				tempToken.signer = signer;
-				tempToken.consumerKey = TWIT_KEY;
-				tempToken.callback = OAUTH_CALLBACK_URL;
+				tempToken.consumerKey = AuthHelper.TWIT_KEY;
+				tempToken.callback = AuthHelper.OAUTH_CALLBACK_URL;
 				
 				tempCredentials = tempToken.execute();
 				signer.tokenSharedSecret = tempCredentials.tokenSecret;

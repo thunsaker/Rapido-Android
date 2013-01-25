@@ -1,0 +1,130 @@
+<resources>
+    <string name="app_name">Rápido</string>
+    <string name="app_name_test">Rápido Test</string>
+    
+    <string name="menu_settings">Configuración</string>
+    
+    <string name="title_activity_main">Rápido</string>
+    <string name="title_activity_twitter">Authorization del Twitter</string>
+    <string name="title_activity_bitly">Autorization del bit.ly</string>
+    <string name="app_version_number">1.4</string>
+    
+    <string name="prefs_about_version_title">Versión</string>
+    <string name="prefs_about_rate_title">Calificar</string>
+    <string name="prefs_about_rate">rapido_about_rate</string>
+    <string name="prefs_about_rate_summary">Calificar y hacer commentarios en el Play Store.</string>
+
+    <string name="label_update">Estado:</string>
+    <string name="twitter">Twitter</string>
+    <string name="facebook">Facebook</string>
+    <string name="bitly">Bit.ly</string>
+    <string name="button_send">Mandar</string>
+    
+    <string name="auth_cancelled">Ha cancellado autorización</string>
+    
+    <string name="twitter_auth_connected">¡Connectado a Twitter!</string>
+    <string name="twitter_auth_failed">Error con autorización del Twitter. :(</string>
+    
+    <string name="update_abort">Cancellando el mando del estado</string>
+    
+    <string name="error_message_too_long">¡El mensaje del estado es damsiado largo!</string>
+    <string name="error_not_posted">Error: Estado no actualizado.</string>
+    <string name="error_no_services_selected">Error: No servicios elegido.</string>
+    <string name="error_no_message">Error: No estado para actualizar.</string>
+    
+    <string name="alert_posted_facebook">Actualizado Facebook!</string>
+    <string name="alert_posted_twitter">Actualizado Twitter!</string>
+    <string name="alert_title">Actualizando tu estado</string>
+    <string name="alert_posting_facebook">Actualizando Facebook</string>
+    <string name="alert_posting_twitter">Actualizando Twitter</string>
+    <string name="alert_fail_facebook">No se pudo actualizar Facebook</string>
+    <string name="alert_fail_twitter">No se pudo actualizar Twitter</string>
+    <string name="alert_fail_retry">Toque para intentarlo de nuevo</string>
+    <string name="alert_posting_shortening_bitly">Acortando con bit.ly</string>
+    <string name="alert_posting_shortened_bitly">Enlace a sido acortado, ahora actualizando estado.</string>
+    
+    <string name="dialog_no_internets">No hay conexión al Internet.</string>
+    <string name="dialog_loading">Cargando autorización del %s</string>
+    <string name="dialog_please_wait">Espere por favor&#8230;</string>
+    <string name="dialog_updating_status">Actualizando estado&#8230;</string>
+    
+    <string name="prefs_category_connected_title">Cuentas</string>
+    
+    <string name="prefs_facebook_title">Facebook</string>
+    <string name="prefs_facebook_title_connected">¡Connectado a Facebook!</string>
+    <string name="prefs_facebook_summary_on">¡Connectado a %s</string>
+    
+    <string name="prefs_facebook_enabled">rapido_facebook_enabled</string>
+    <string name="prefs_facebook_connected">rapido_facebook_connected</string>
+    <string name="prefs_facebook_expiration">rapido_facebook_expiration</string>
+    <string name="prefs_facebook_key">rapido_facebook_key</string>
+    <string name="prefs_facebook_name">rapido_facebook_name</string>
+    
+    <string name="prefs_facebook_hashtags_title">Eliminar #hashtags</string>
+    <string name="prefs_facebook_hashtags">rapido_facebook_hashtags_remove</string>
+    <string name="prefs_facebook_hashtags_summary_on">No incluye hashtags al actualizar Facebook.</string>
+    <string name="prefs_facebook_hashtags_summary_off">Incluye los hashtags.</string>
+    
+    <string name="prefs_twitter_title">Twitter</string>
+    <string name="prefs_twitter_title_connected">¡Connectado a Twitter!</string>
+    <string name="prefs_twitter_summary_on">¡Connectado a to %s</string>
+    
+    <string name="prefs_twitter_enabled">rapido_twitter_enabled</string>
+    <string name="prefs_twitter_connected">rapido_twitter_connected</string>
+    <string name="prefs_twitter_token">rapido_twitter_token</string>
+    <string name="prefs_twitter_token_temp">rapido_twitter_token_temp</string>
+    <string name="prefs_twitter_secret">rapido_twitter_secret</string>
+    <string name="prefs_twitter_username">rapido_facebook_username</string>
+    
+    <string name="prefs_bitly_title">bit.ly</string>
+    <string name="prefs_bitly_title_connect">Connectar a Bitly</string>
+    <string name="prefs_bitly_title_connected">Connectado a Bitly</string>
+    <string name="prefs_bitly_title_connect_summary_on">Acortar enlaces antes de mandar</string>
+    <string name="prefs_bitly_title_connect_summary_off">Deja los enlaces como son</string>
+    <string name="prefs_bitly_title_connect_text_on">Connectado a bit.ly</string>
+    <string name="prefs_bitly_title_connect_text_off">Connectar a bit.ly</string>
+    <string name="prefs_bitly_title_summary">Permitir acortando de los enlaces con bit.ly</string>
+    <string name="prefs_bitly_title_shorten_facebook">¿Acortar enlaces mandado a Facebook?</string>
+    <string name="prefs_bitly_title_shorten_twitter">¿Acortar enlaces mandado a Twitter?</string>
+    <string name="prefs_bitly_title_shorten_domain">Eligir un Domain acortador</string>
+    <string name="prefs_bitly_title_shorten_domain_summary">Usa bit.ly, j.mp o bitly.com para acortar</string>
+    <string-array name="prefs_bitly_title_shorten_domain_entries">
+        <item>bit.ly</item>
+        <item>j.mp</item>
+        <item>bitly.com</item>
+	</string-array>
+	<string-array name="prefs_bitly_title_shorten_domain_entryValues">
+	    <item>prefs_bitly_title_shorten_domain_bitly</item>
+    	<item>prefs_bitly_title_shorten_domain_jmp</item>
+    	<item>prefs_bitly_title_shorten_domain_bitlycom</item>
+	</string-array>
+	<string name="prefs_bitly_title_shorten_domain_bitly">bit.ly</string>
+    <string name="prefs_bitly_title_shorten_domain_jmp">j.mp</string>
+    <string name="prefs_bitly_title_shorten_domain_bitlycom">bitly.com</string>
+    
+    <!-- bit.ly user preferences -->
+    <string name="prefs_bitly_enabled">rapido_bitly_enabled</string>
+    <string name="prefs_bitly_connected">rapido_bitly_connected</string>
+    <string name="prefs_bitly_shorten_facebook">rapido_bitly_shorten_facebook</string>
+    <string name="prefs_bitly_shorten_twitter">rapido_bitly_shorten_twitter</string>
+    <string name="prefs_bitly_shorten_domain">rapido_bitly_shorten_domain</string>
+    
+    <!-- bit.ly user info -->
+    <string name="prefs_bitly_token">rapido_bitly_token</string>
+    <string name="prefs_bitly_apikey">rapido_bitly_apikey</string>
+    <string name="prefs_bitly_login">rapido_bitly_login</string>
+    
+    <string name="prefs_category_application_settings">Configuración del Applicación</string>
+    <string name="prefs_sendOnEnter_title">¿Mandar usando "Enter"?</string>
+    <string name="prefs_sendOnEnter_enabled">rapido_sendOnEnter_enabled</string>
+    <string name="prefs_sendOnEnter_summary_on">¿Mandar el mensaje al tocar "Enter"?</string>
+    
+    <string name="prefs_clear_accounts_title">Borrar Información de las cuentas.</string>
+    <string name="prefs_clear_accounts">rapido_accounts_clear</string>
+    
+    <string name="prefs_category_misc_title">Misceláneo</string>
+    <string name="prefs_misc_black_title">Use Black theme</string>
+    <string name="prefs_misc_black">rapido_theme_black_enabled</string>
+    
+    <string name="prefs_category_title_about">Acerca</string>
+</resources>

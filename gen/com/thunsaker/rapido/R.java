@@ -8,6 +8,10 @@
 package com.thunsaker.rapido;
 
 public final class R {
+    public static final class array {
+        public static final int prefs_bitly_title_shorten_domain_entries=0x7f0c0000;
+        public static final int prefs_bitly_title_shorten_domain_entryValues=0x7f0c0001;
+    }
     public static final class attr {
         /**  Specified if we are forcing an action item overflow menu. 
          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
@@ -592,10 +596,14 @@ containing a value of this type.
         public static final int abs__bright_foreground_inverse_holo_dark=0x7f070006;
         public static final int abs__bright_foreground_inverse_holo_light=0x7f070007;
         public static final int abs__holo_blue_light=0x7f070008;
-        public static final int abs__primary_text_disable_only_holo_dark=0x7f070009;
-        public static final int abs__primary_text_disable_only_holo_light=0x7f07000a;
-        public static final int abs__primary_text_holo_dark=0x7f07000b;
-        public static final int abs__primary_text_holo_light=0x7f07000c;
+        public static final int abs__primary_text_disable_only_holo_dark=0x7f07000d;
+        public static final int abs__primary_text_disable_only_holo_light=0x7f07000e;
+        public static final int abs__primary_text_holo_dark=0x7f07000f;
+        public static final int abs__primary_text_holo_light=0x7f070010;
+        public static final int black=0x7f070009;
+        public static final int black_transparent=0x7f07000b;
+        public static final int white=0x7f07000a;
+        public static final int white_transparent=0x7f07000c;
     }
     public static final class dimen {
         /**  Default height of an action bar. 
@@ -883,82 +891,148 @@ containing a value of this type.
         public static final int sherlock_spinner_item=0x7f030016;
     }
     public static final class menu {
-        public static final int activity_main=0x7f0c0000;
+        public static final int activity_main=0x7f0d0000;
     }
     public static final class string {
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
+ Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
          */
         public static final int abs__action_bar_home_description=0x7f0a0000;
         /**  Content description for the action bar "up" affordance. [CHAR LIMIT=NONE] 
+ Content description for the action bar "up" affordance. [CHAR LIMIT=NONE] 
          */
         public static final int abs__action_bar_up_description=0x7f0a0001;
         /**  Content description for the action menu overflow button. [CHAR LIMIT=NONE] 
+ Content description for the action menu overflow button. [CHAR LIMIT=NONE] 
          */
         public static final int abs__action_menu_overflow_description=0x7f0a0002;
         /**  Label for the "Done" button on the far left of action mode toolbars. 
+ Label for the "Done" button on the far left of action mode toolbars. 
          */
         public static final int abs__action_mode_done=0x7f0a0003;
         /**  Title default for a dialog showing possible activities in ActivityChooserView [CHAR LIMIT=25] 
+ Title default for a dialog showing possible activities in ActivityChooserView [CHAR LIMIT=25] 
          */
         public static final int abs__activity_chooser_view_dialog_title_default=0x7f0a0005;
         /**  Title for a button to expand the list of activities in ActivityChooserView [CHAR LIMIT=25] 
+ Title for a button to expand the list of activities in ActivityChooserView [CHAR LIMIT=25] 
          */
         public static final int abs__activity_chooser_view_see_all=0x7f0a0004;
         /**  Description of the shwoing of a popup window with activities to choose from. [CHAR LIMIT=NONE] 
+ Description of the shwoing of a popup window with activities to choose from. [CHAR LIMIT=NONE] 
          */
         public static final int abs__activitychooserview_choose_application=0x7f0a0007;
         /**  Title for a dialog showing possible activities for sharing in ShareActionProvider [CHAR LIMIT=25] 
+ Title for a dialog showing possible activities for sharing in ShareActionProvider [CHAR LIMIT=25] 
          */
         public static final int abs__share_action_provider_share_with=0x7f0a0006;
         /**  Description of the choose target button in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] 
+ Description of the choose target button in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] 
          */
         public static final int abs__shareactionprovider_share_with=0x7f0a0008;
         /**  Description of a share target (both in the list of such or the default share button) in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] 
+ Description of a share target (both in the list of such or the default share button) in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] 
          */
         public static final int abs__shareactionprovider_share_with_application=0x7f0a0009;
-        public static final int alert_posted_facebook=0x7f0a001c;
-        public static final int alert_posted_twitter=0x7f0a001d;
+        public static final int alert_fail_facebook=0x7f0a0027;
+        public static final int alert_fail_retry=0x7f0a0029;
+        public static final int alert_fail_twitter=0x7f0a0028;
+        public static final int alert_posted_facebook=0x7f0a0022;
+        public static final int alert_posted_twitter=0x7f0a0023;
+        public static final int alert_posting_facebook=0x7f0a0025;
+        public static final int alert_posting_shortened_bitly=0x7f0a002b;
+        public static final int alert_posting_shortening_bitly=0x7f0a002a;
+        public static final int alert_posting_twitter=0x7f0a0026;
+        public static final int alert_title=0x7f0a0024;
         public static final int app_name=0x7f0a000a;
-        public static final int app_version_number=0x7f0a000f;
-        public static final int button_send=0x7f0a0013;
-        public static final int dialog_no_internets=0x7f0a001e;
-        public static final int error_message_too_long=0x7f0a0018;
-        public static final int error_no_message=0x7f0a001b;
-        public static final int error_no_services_selected=0x7f0a001a;
-        public static final int error_not_posted=0x7f0a0019;
-        public static final int facebook=0x7f0a0012;
-        public static final int label_update=0x7f0a0010;
-        public static final int menu_settings=0x7f0a000b;
-        public static final int prefs_category_application_settings=0x7f0a002f;
-        public static final int prefs_category_connected_title=0x7f0a001f;
-        public static final int prefs_clear_accounts=0x7f0a0034;
-        public static final int prefs_clear_accounts_title=0x7f0a0033;
-        public static final int prefs_facebook_connected=0x7f0a0022;
-        public static final int prefs_facebook_enabled=0x7f0a0021;
-        public static final int prefs_facebook_expiration=0x7f0a0023;
-        public static final int prefs_facebook_key=0x7f0a0024;
-        public static final int prefs_facebook_name=0x7f0a0025;
-        public static final int prefs_facebook_summary_on=0x7f0a0026;
-        public static final int prefs_facebook_title=0x7f0a0020;
-        public static final int prefs_sendOnEnter_enabled=0x7f0a0031;
-        public static final int prefs_sendOnEnter_summary_on=0x7f0a0032;
-        public static final int prefs_sendOnEnter_title=0x7f0a0030;
-        public static final int prefs_twitter_connected=0x7f0a0029;
-        public static final int prefs_twitter_enabled=0x7f0a0028;
-        public static final int prefs_twitter_secret=0x7f0a002c;
-        public static final int prefs_twitter_summary_on=0x7f0a002e;
-        public static final int prefs_twitter_title=0x7f0a0027;
-        public static final int prefs_twitter_token=0x7f0a002a;
-        public static final int prefs_twitter_token_temp=0x7f0a002b;
-        public static final int prefs_twitter_username=0x7f0a002d;
-        public static final int title_activity_bitly=0x7f0a000e;
-        public static final int title_activity_main=0x7f0a000c;
-        public static final int title_activity_twitter=0x7f0a000d;
-        public static final int twitter=0x7f0a0011;
-        public static final int twitter_auth_cancelled=0x7f0a0014;
-        public static final int twitter_auth_connected=0x7f0a0015;
-        public static final int twitter_auth_failed=0x7f0a0016;
-        public static final int update_abort=0x7f0a0017;
+        public static final int app_name_test=0x7f0a000b;
+        public static final int app_version_number=0x7f0a0010;
+        public static final int auth_cancelled=0x7f0a001a;
+        public static final int bitly=0x7f0a0018;
+        public static final int button_send=0x7f0a0019;
+        public static final int dialog_loading=0x7f0a002d;
+        public static final int dialog_no_internets=0x7f0a002c;
+        public static final int dialog_please_wait=0x7f0a002e;
+        public static final int dialog_updating_status=0x7f0a002f;
+        public static final int error_message_too_long=0x7f0a001e;
+        public static final int error_no_message=0x7f0a0021;
+        public static final int error_no_services_selected=0x7f0a0020;
+        public static final int error_not_posted=0x7f0a001f;
+        public static final int facebook=0x7f0a0017;
+        public static final int label_update=0x7f0a0015;
+        public static final int menu_settings=0x7f0a000c;
+        public static final int prefs_about_rate=0x7f0a0013;
+        public static final int prefs_about_rate_summary=0x7f0a0014;
+        public static final int prefs_about_rate_title=0x7f0a0012;
+        public static final int prefs_about_version_title=0x7f0a0011;
+        public static final int prefs_bitly_apikey=0x7f0a005b;
+        public static final int prefs_bitly_connected=0x7f0a0056;
+        /**  bit.ly user preferences 
+ bit.ly user preferences 
+         */
+        public static final int prefs_bitly_enabled=0x7f0a0055;
+        public static final int prefs_bitly_login=0x7f0a005c;
+        public static final int prefs_bitly_shorten_domain=0x7f0a0059;
+        public static final int prefs_bitly_shorten_facebook=0x7f0a0057;
+        public static final int prefs_bitly_shorten_twitter=0x7f0a0058;
+        public static final int prefs_bitly_title=0x7f0a0046;
+        public static final int prefs_bitly_title_connect=0x7f0a0047;
+        public static final int prefs_bitly_title_connect_summary_off=0x7f0a004a;
+        public static final int prefs_bitly_title_connect_summary_on=0x7f0a0049;
+        public static final int prefs_bitly_title_connect_text_off=0x7f0a004c;
+        public static final int prefs_bitly_title_connect_text_on=0x7f0a004b;
+        public static final int prefs_bitly_title_connected=0x7f0a0048;
+        public static final int prefs_bitly_title_shorten_domain=0x7f0a0050;
+        public static final int prefs_bitly_title_shorten_domain_bitly=0x7f0a0052;
+        public static final int prefs_bitly_title_shorten_domain_bitlycom=0x7f0a0054;
+        public static final int prefs_bitly_title_shorten_domain_jmp=0x7f0a0053;
+        public static final int prefs_bitly_title_shorten_domain_summary=0x7f0a0051;
+        public static final int prefs_bitly_title_shorten_facebook=0x7f0a004e;
+        public static final int prefs_bitly_title_shorten_twitter=0x7f0a004f;
+        public static final int prefs_bitly_title_summary=0x7f0a004d;
+        /**  bit.ly user info 
+ bit.ly user info 
+         */
+        public static final int prefs_bitly_token=0x7f0a005a;
+        public static final int prefs_category_application_settings=0x7f0a005d;
+        public static final int prefs_category_connected_title=0x7f0a0030;
+        public static final int prefs_category_misc_title=0x7f0a0063;
+        public static final int prefs_category_title_about=0x7f0a0066;
+        public static final int prefs_clear_accounts=0x7f0a0062;
+        public static final int prefs_clear_accounts_title=0x7f0a0061;
+        public static final int prefs_facebook_connected=0x7f0a0035;
+        public static final int prefs_facebook_enabled=0x7f0a0034;
+        public static final int prefs_facebook_expiration=0x7f0a0036;
+        public static final int prefs_facebook_hashtags=0x7f0a003a;
+        public static final int prefs_facebook_hashtags_summary_off=0x7f0a003c;
+        public static final int prefs_facebook_hashtags_summary_on=0x7f0a003b;
+        public static final int prefs_facebook_hashtags_title=0x7f0a0039;
+        public static final int prefs_facebook_key=0x7f0a0037;
+        public static final int prefs_facebook_name=0x7f0a0038;
+        public static final int prefs_facebook_summary_on=0x7f0a0033;
+        public static final int prefs_facebook_title=0x7f0a0031;
+        public static final int prefs_facebook_title_connected=0x7f0a0032;
+        public static final int prefs_misc_black=0x7f0a0065;
+        public static final int prefs_misc_black_title=0x7f0a0064;
+        public static final int prefs_sendOnEnter_enabled=0x7f0a005f;
+        public static final int prefs_sendOnEnter_summary_on=0x7f0a0060;
+        public static final int prefs_sendOnEnter_title=0x7f0a005e;
+        public static final int prefs_twitter_connected=0x7f0a0041;
+        public static final int prefs_twitter_enabled=0x7f0a0040;
+        public static final int prefs_twitter_secret=0x7f0a0044;
+        public static final int prefs_twitter_summary_on=0x7f0a003f;
+        public static final int prefs_twitter_title=0x7f0a003d;
+        public static final int prefs_twitter_title_connected=0x7f0a003e;
+        public static final int prefs_twitter_token=0x7f0a0042;
+        public static final int prefs_twitter_token_temp=0x7f0a0043;
+        public static final int prefs_twitter_username=0x7f0a0045;
+        public static final int title_activity_bitly=0x7f0a000f;
+        public static final int title_activity_main=0x7f0a000d;
+        public static final int title_activity_twitter=0x7f0a000e;
+        public static final int twitter=0x7f0a0016;
+        public static final int twitter_auth_connected=0x7f0a001b;
+        public static final int twitter_auth_failed=0x7f0a001c;
+        public static final int update_abort=0x7f0a001d;
     }
     public static final class style {
         public static final int AppTheme=0x7f0b005b;

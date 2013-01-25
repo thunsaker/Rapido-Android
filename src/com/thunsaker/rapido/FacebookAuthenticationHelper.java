@@ -6,8 +6,10 @@ import java.net.MalformedURLException;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
@@ -17,7 +19,7 @@ import com.facebook.android.FacebookError;
 
 public class FacebookAuthenticationHelper {
 	final String TAG = getClass().getName();
-	public static Facebook facebook = new Facebook("YOUR_FACEBOOK_APP_ID");
+	public static Facebook facebook = new Facebook(AuthHelper.FACEBOOK_AUTH_ID);
 	private Activity myActivity;
 	private Context myContext;
 	
@@ -35,24 +37,28 @@ public class FacebookAuthenticationHelper {
 	            	PreferencesHelper.setFacebookKey(myContext, facebook.getAccessToken());
 	            	PreferencesHelper.setFacebookExpiration(myContext, facebook.getAccessExpires());
 	            	PreferencesHelper.setFacebookEnabled(myContext, true);
+	            	PreferencesHelper.setFacebookConnected(myContext, true);
 	            }
 
 	            // Add handling for a user rejecting the permissions
 	            @Override
 	            public void onFacebookError(FacebookError error) {
 	            	PreferencesHelper.setFacebookEnabled(myContext, false);
+	            	PreferencesHelper.setFacebookConnected(myContext, false);
 	            	Log.d(TAG, error.getMessage());
 	            }
 
 	            @Override
 	            public void onError(DialogError e) {
 	            	PreferencesHelper.setFacebookEnabled(myContext, false);
+	            	PreferencesHelper.setFacebookConnected(myContext, false);
 	            	Log.d(TAG, e.getMessage());
 	            }
 
 	            @Override
 	            public void onCancel() {
 	            	PreferencesHelper.setFacebookEnabled(myContext, false);
+	            	PreferencesHelper.setFacebookConnected(myContext, false);
 	            	Log.d(TAG, "Cancelled Facebook Auth");
 	            }
 	        });
@@ -78,19 +84,35 @@ public class FacebookAuthenticationHelper {
     	return facebook.isSessionValid();
     }
     
-    public String SignOut() {
-    	try {
-			facebook.logout(myContext);
-			PreferencesHelper.setFacebookExpiration(myContext, Long.valueOf("0"));
-			PreferencesHelper.setFacebookEnabled(myContext, false);
-			PreferencesHelper.setFacebookKey(myContext, "");
-			return "You have been signed out of Facebook";
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-			return "Malformed URL, try again";
-		} catch (IOException e) {
-			e.printStackTrace();
-			return "A problem occured while signing out, try again";
+	public static class SignOut extends AsyncTask<Void, Integer, String> {
+		Context mySignOutContext;
+		FacebookAuthenticationHelper mySignOutFbAuth;
+		public SignOut(Context theContext) {
+			mySignOutContext = theContext;
 		}
-    }
+
+		@Override
+		protected String doInBackground(Void... params) {
+			try {
+				facebook.logout(mySignOutContext);
+				PreferencesHelper.setFacebookExpiration(mySignOutContext, Long.valueOf("0"));
+				PreferencesHelper.setFacebookEnabled(mySignOutContext, false);
+				PreferencesHelper.setFacebookKey(mySignOutContext, "");
+				return "You have been signed out of Facebook";
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+				return "Malformed URL, try again";
+			} catch (IOException e) {
+				e.printStackTrace();
+				return "A problem occured while signing out, try again";
+			}
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			
+			Toast.makeText(mySignOutContext, result, Toast.LENGTH_SHORT).show();
+		}
+	}
 }
