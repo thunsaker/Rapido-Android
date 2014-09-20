@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.7.+'
+        classpath 'com.android.tools.build:gradle:0.12.2'
     }
 }
 
@@ -16,7 +16,7 @@ allprojects {
         }
     }
 
-    tasks.withType(Compile) {
-        options.compilerArgs << "-Xlint:deprecation"
-    }
+//    tasks.withType(Compile) {
+//        options.compilerArgs << "-Xlint:deprecation"
+//    }
 }
