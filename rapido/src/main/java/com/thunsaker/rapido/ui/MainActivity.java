@@ -469,7 +469,7 @@ public class MainActivity extends ActionBarActivity {
                         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
                         if (activeNetworkInfo != null) {
                             facebookSession = Session.getActiveSession();
-                            if (!facebookSession.isOpened() && !facebookSession.isClosed()) {
+                            if (facebookSession != null && !facebookSession.isOpened() && !facebookSession.isClosed()) {
                                 facebookSession.openForRead(new Session.OpenRequest(MainActivity.this).setCallback(statusCallback));
                             } else {
                                 Session.openActiveSession(MainActivity.this, true, statusCallback);
