@@ -86,4 +86,8 @@ dependencies {
     compile 'com.google.oauth-client:google-oauth-client:1.18.0-rc'
     compile 'com.twitter:twitter-text:1.9.0'
     compile 'org.twitter4j:twitter4j-core:4.0.1'
+
+    compile 'com.jakewharton:butterknife:5.0.0'
+    compile 'de.greenrobot:eventbus:2.2.0'
+    compile 'com.squareup.dagger:dagger:1.2.1'
 }
