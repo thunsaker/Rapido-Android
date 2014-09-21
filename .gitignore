@@ -54,8 +54,6 @@ proguard/
 # Log Files
 *.log
 
-rapido/build.gradle
-
 facebookSDK/
 foursquareoauthlibrary/
 rapido/src/main/java/com/thunsaker/rapido/services/AuthHelper.java
