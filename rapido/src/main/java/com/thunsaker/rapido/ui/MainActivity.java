@@ -45,6 +45,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.plus.PlusClient;
 import com.google.gson.Gson;
+import com.thunsaker.rapido.BuildConfig;
 import com.thunsaker.rapido.R;
 import com.thunsaker.rapido.classes.Draft;
 import com.thunsaker.rapido.classes.PickedLocation;
@@ -147,7 +148,8 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Crashlytics.start(this);
+        if(!BuildConfig.DEBUG)
+            Crashlytics.start(this);
         setContentView(R.layout.activity_main);
         final ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(showHomeUp);
@@ -246,6 +248,7 @@ public class MainActivity extends ActionBarActivity {
         AdView adView = (AdView)this.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
 	        .addTestDevice("D17425E1A2C3EB1DE2D8E56DEE780F50")
+            .addTestDevice("1BF36BBC3C197AFF96AF3F9F305CAD48") // N5 - L
 	        .build();
         adView.loadAd(adRequest);
     }
@@ -466,7 +469,7 @@ public class MainActivity extends ActionBarActivity {
                         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
                         if (activeNetworkInfo != null) {
                             facebookSession = Session.getActiveSession();
-                            if (!facebookSession.isOpened() && !facebookSession.isClosed()) {
+                            if (facebookSession != null && !facebookSession.isOpened() && !facebookSession.isClosed()) {
                                 facebookSession.openForRead(new Session.OpenRequest(MainActivity.this).setCallback(statusCallback));
                             } else {
                                 Session.openActiveSession(MainActivity.this, true, statusCallback);
