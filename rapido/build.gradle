@@ -77,12 +77,8 @@ android {
 }
 
 dependencies {
-<<<<<<< HEAD
     compile project(':zapato') // my common classes
-    compile project(':foursquareoauthlibrary')
-=======
     compile project (':foursquare-android-oauth:foursquare-oauth-library')
->>>>>>> feature/foursquare-update
     compile ('com.facebook:facebook-android-sdk:+@aar') {
         transitive = true
     }
