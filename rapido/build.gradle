@@ -66,11 +66,23 @@ android {
             signingConfig signingConfigs.releaseSigning
         }
     }
+
+//    sourceSets {
+//        main {
+//            manifest.srcFile '../foursquare-android-oauth/foursquare-oauth-library/src/main/AndroidManifest.xml'
+//            java.srcDirs = ['../foursquare-android-oauth/foursquare-oauth-library/src/']
+//            res.srcDirs = ['../foursquare-android-oauth/foursquare-oauth-library/src/main/res']
+//        }
+//    }
 }
 
 dependencies {
+<<<<<<< HEAD
     compile project(':zapato') // my common classes
     compile project(':foursquareoauthlibrary')
+=======
+    compile project (':foursquare-android-oauth:foursquare-oauth-library')
+>>>>>>> feature/foursquare-update
     compile ('com.facebook:facebook-android-sdk:+@aar') {
         transitive = true
     }
