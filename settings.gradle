@@ -1,2 +1,3 @@
-include ':foursquare-android-oauth:foursquare-oauth-library'
+include ':foursquare-android-oauth:foursquare-oauth-library', ':zapato'
 include ':rapido'
+project(':zapato').projectDir = new File('zapato/zapato')
