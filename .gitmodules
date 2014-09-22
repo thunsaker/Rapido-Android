@@ -1,0 +1,3 @@
+[submodule "zapato"]
+	path = zapato
+	url = https://github.com/thunsaker/zapato.git
