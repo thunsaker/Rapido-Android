@@ -57,6 +57,6 @@ proguard/
 facebookSDK/
 foursquareoauthlibrary/
 rapido/src/main/java/com/thunsaker/rapido/services/AuthHelper.java
-rapido/src/main/res/values/com_crashlytics_export_strings.xml
+rapido/src/main/assets/crashlytics-build.properties
 rapido/src/main/res/values/donotsave.xml
 rapido/libs/**
