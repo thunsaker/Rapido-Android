@@ -1,2 +1,2 @@
-include ':foursquareoauthlibrary'
+include ':foursquare-android-oauth:foursquare-oauth-library'
 include ':rapido'
