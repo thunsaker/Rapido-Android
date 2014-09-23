@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -47,11 +46,13 @@ import com.google.android.gms.plus.PlusClient;
 import com.google.gson.Gson;
 import com.thunsaker.rapido.BuildConfig;
 import com.thunsaker.rapido.R;
+import com.thunsaker.rapido.app.BaseRapidoActivity;
 import com.thunsaker.rapido.classes.Draft;
 import com.thunsaker.rapido.classes.PickedLocation;
 import com.thunsaker.rapido.services.AuthHelper;
 import com.thunsaker.rapido.util.PreferencesHelper;
 import com.thunsaker.rapido.util.Util;
+import com.thunsaker.zapato.annotations.ForApplication;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -59,7 +60,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-public class MainActivity extends ActionBarActivity {
+import javax.inject.Inject;
+
+public class MainActivity extends BaseRapidoActivity {
+    @Inject
+    @ForApplication
+    Context mContext;
+
     private boolean useLogo = true;
     private boolean showHomeUp = false;
 
@@ -156,36 +163,36 @@ public class MainActivity extends ActionBarActivity {
         ab.setDisplayUseLogoEnabled(useLogo);
 
         // Get Prefs
-        facebookEnabled = PreferencesHelper.getFacebookEnabled(getApplicationContext());
-        twitterEnabled = PreferencesHelper.getTwitterEnabled(getApplicationContext());
-        foursquareEnabled = PreferencesHelper.getFoursquareEnabled(getApplicationContext());
-        googlePlusEnabled = PreferencesHelper.getGooglePlusEnabled(getApplicationContext());
-        appDotNetEnabled = PreferencesHelper.getAppDotNetEnabled(getApplicationContext());
+        facebookEnabled = PreferencesHelper.getFacebookEnabled(mContext);
+        twitterEnabled = PreferencesHelper.getTwitterEnabled(mContext);
+        foursquareEnabled = PreferencesHelper.getFoursquareEnabled(mContext);
+        googlePlusEnabled = PreferencesHelper.getGooglePlusEnabled(mContext);
+        appDotNetEnabled = PreferencesHelper.getAppDotNetEnabled(mContext);
 
-        facebookConnected = PreferencesHelper.getFacebookConnected(getApplicationContext());
-        twitterConnected = PreferencesHelper.getTwitterConnected(getApplicationContext());
-        foursquareConnected = PreferencesHelper.getFoursquareConnected(getApplicationContext());
-        googlePlusConnected = PreferencesHelper.getGooglePlusConnected(getApplicationContext());
-        appDotNetConnected = PreferencesHelper.getAppDotNetConnected(getApplicationContext());
+        facebookConnected = PreferencesHelper.getFacebookConnected(mContext);
+        twitterConnected = PreferencesHelper.getTwitterConnected(mContext);
+        foursquareConnected = PreferencesHelper.getFoursquareConnected(mContext);
+        googlePlusConnected = PreferencesHelper.getGooglePlusConnected(mContext);
+        appDotNetConnected = PreferencesHelper.getAppDotNetConnected(mContext);
 
-        submitOnEnter = PreferencesHelper.getSendOnEnterEnabled(getApplicationContext());
+        submitOnEnter = PreferencesHelper.getSendOnEnterEnabled(mContext);
 
         // Facebook Stuff
-        Settings.publishInstallAsync(getApplicationContext(), getString(R.string.facebook_app_id));
+        Settings.publishInstallAsync(mContext, getString(R.string.facebook_app_id));
 
         if(facebookConnected) {
             // Import Existing Token
             if(facebookSession == null) {
-                facebookSession = new Session(getApplicationContext());
+                facebookSession = new Session(mContext);
                 // Get Keys
-                FACEBOOK_KEY = PreferencesHelper.getFacebookKey(getApplicationContext());
+                FACEBOOK_KEY = PreferencesHelper.getFacebookKey(mContext);
                 if (FACEBOOK_KEY != null && FACEBOOK_KEY != "") {
                     AccessToken facebookAccessToken =
                             AccessToken.createFromExistingAccessToken(FACEBOOK_KEY, null, null, null, null);
                     if(facebookAccessToken != null) {
-                        PreferencesHelper.setFacebookConnected(getApplicationContext(), true);
-                        PreferencesHelper.setFacebookKey(getApplicationContext(), facebookAccessToken.getToken());
-                        PreferencesHelper.setFacebookEnabled(getApplicationContext(), true);
+                        PreferencesHelper.setFacebookConnected(mContext, true);
+                        PreferencesHelper.setFacebookKey(mContext, facebookAccessToken.getToken());
+                        PreferencesHelper.setFacebookEnabled(mContext, true);
                     }
                     Session.setActiveSession(facebookSession);
                 }
@@ -206,11 +213,11 @@ public class MainActivity extends ActionBarActivity {
             }
         }
 
-        TWITTER_TOKEN = PreferencesHelper.getTwitterToken(getApplicationContext());
-        TWITTER_TOKEN_SECRET = PreferencesHelper.getTwitterSecret(getApplicationContext());
+        TWITTER_TOKEN = PreferencesHelper.getTwitterToken(mContext);
+        TWITTER_TOKEN_SECRET = PreferencesHelper.getTwitterSecret(mContext);
 
-        FOURSQUARE_TOKEN = PreferencesHelper.getFoursquareToken(getApplicationContext());
-        APP_DOT_NET_TOKEN = PreferencesHelper.getAppDotNetToken(getApplicationContext());
+        FOURSQUARE_TOKEN = PreferencesHelper.getFoursquareToken(mContext);
+        APP_DOT_NET_TOKEN = PreferencesHelper.getAppDotNetToken(mContext);
 
         mTextView = (TextView) findViewById(R.id.TextViewCount);
         mEditText = (EditText) findViewById(R.id.EditTextUpdate);
@@ -233,8 +240,8 @@ public class MainActivity extends ActionBarActivity {
             }
         }
 
-        genericIntent = new Intent(getApplicationContext(), MainActivity.class);
-        TaskStackBuilder stackBuilder = TaskStackBuilder.from(getApplicationContext());
+        genericIntent = new Intent(mContext, MainActivity.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.from(mContext);
         stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(genericIntent);
         genericPendingIntent =
@@ -258,7 +265,7 @@ public class MainActivity extends ActionBarActivity {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         mNotificationRapidoPersistent =
-                new NotificationCompat.Builder(getApplicationContext())
+                new NotificationCompat.Builder(mContext)
                         .setSmallIcon(R.drawable.ic_stat_rapido)
                         .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
                         .setContentTitle(getString(R.string.alert_persistent_notification_title))
@@ -267,7 +274,7 @@ public class MainActivity extends ActionBarActivity {
                         .setAutoCancel(true)
                         .setOngoing(true);
 
-        if(PreferencesHelper.getPersistentNotificationEnabled(getApplicationContext())){
+        if(PreferencesHelper.getPersistentNotificationEnabled(mContext)){
             mNotificationManager.notify(RAPIDO_NOTIFICATION_PERSISTENT, mNotificationRapidoPersistent.getNotification());
         } else {
             mNotificationManager.cancel(RAPIDO_NOTIFICATION_PERSISTENT);
@@ -353,8 +360,8 @@ public class MainActivity extends ActionBarActivity {
                 EditText myEditText = (EditText) findViewById(R.id.EditTextUpdate);
                 String myDraftMessage = myEditText.getText().toString();
                 Draft myDraft = new Draft(myDraftMessage);
-                MainActivity.saveDraft(MainActivity.DRAFT_GENERIC, myDraft, getApplicationContext());
-                Intent preferencesIntent = new Intent(getApplicationContext(), PreferencesActivity.class);
+                MainActivity.saveDraft(MainActivity.DRAFT_GENERIC, myDraft, mContext);
+                Intent preferencesIntent = new Intent(mContext, PreferencesActivity.class);
                 startActivity(preferencesIntent);
                 return false;
             }
@@ -432,16 +439,16 @@ public class MainActivity extends ActionBarActivity {
             EditText myEditText = (EditText) findViewById(R.id.EditTextUpdate);
             String myDraftMessage = myEditText.getText() != null ? myEditText.getText().toString() : "";
             Draft myDraft = new Draft(myDraftMessage);
-            MainActivity.saveDraft(MainActivity.DRAFT_GENERIC, myDraft, getApplicationContext());
+            MainActivity.saveDraft(MainActivity.DRAFT_GENERIC, myDraft, mContext);
             if (isChecked) {
-                if (TWITTER_TOKEN != null && PreferencesHelper.getTwitterConnected(getApplicationContext())) {
+                if (TWITTER_TOKEN != null && PreferencesHelper.getTwitterConnected(mContext)) {
                     return;
                 } else {
                     ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
                     if (activeNetworkInfo != null) {
                         // Launch Twitter Activity
-                        Intent twitterAuth = new Intent(getApplicationContext(), TwitterAuthorizationActivity.class);
+                        Intent twitterAuth = new Intent(mContext, TwitterAuthorizationActivity.class);
                         startActivity(twitterAuth);
                     } else {
                         // Show Dialog
@@ -462,7 +469,7 @@ public class MainActivity extends ActionBarActivity {
                     EditText myEditText = (EditText) findViewById(R.id.EditTextUpdate);
                     String myDraftMessage = myEditText.getText() != null ? myEditText.getText().toString() : "";
                     Draft myDraft = new Draft(myDraftMessage);
-                    MainActivity.saveDraft(MainActivity.DRAFT_GENERIC, myDraft, getApplicationContext());
+                    MainActivity.saveDraft(MainActivity.DRAFT_GENERIC, myDraft, mContext);
                     if (isChecked) {
                         ConnectivityManager connectivityManager =
                                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -491,9 +498,9 @@ public class MainActivity extends ActionBarActivity {
             EditText myEditText = (EditText) findViewById(R.id.EditTextUpdate);
             String myDraftMessage = myEditText.getText() != null ? myEditText.getText().toString() : "";
             Draft myDraft = new Draft(myDraftMessage);
-            MainActivity.saveDraft(MainActivity.DRAFT_GENERIC, myDraft, getApplicationContext());
+            MainActivity.saveDraft(MainActivity.DRAFT_GENERIC, myDraft, mContext);
             if(isChecked) {
-                if (FOURSQUARE_TOKEN != null && PreferencesHelper.getFoursquareConnected(getApplicationContext())) {
+                if (FOURSQUARE_TOKEN != null && PreferencesHelper.getFoursquareConnected(mContext)) {
                     if(CurrentPickedLocation == null || (CurrentPickedLocation != null && !CurrentPickedLocation.getIsFoursquare()))
                         SelectLocation();
                     else
@@ -505,7 +512,7 @@ public class MainActivity extends ActionBarActivity {
                     if (activeNetworkInfo != null) {
                         Intent intent =
                                 FoursquareOAuth.getConnectIntent(
-                                        getApplicationContext(),
+                                        mContext,
                                         AuthHelper.FOURSQUARE_CLIENT_ID);
                         startActivityForResult(intent, REQUEST_FOURSQUARE_AUTH);
                     } else {
@@ -525,16 +532,16 @@ public class MainActivity extends ActionBarActivity {
             EditText myEditText = (EditText) findViewById(R.id.EditTextUpdate);
             String myDraftMessage = myEditText.getText() != null ? myEditText.getText().toString() : "";
             Draft myDraft = new Draft(myDraftMessage);
-            MainActivity.saveDraft(MainActivity.DRAFT_GENERIC, myDraft, getApplicationContext());
+            MainActivity.saveDraft(MainActivity.DRAFT_GENERIC, myDraft, mContext);
             if(isChecked) {
-                Boolean isGooglePlusChecked = PreferencesHelper.getGooglePlusConnected(getApplicationContext());
+                Boolean isGooglePlusChecked = PreferencesHelper.getGooglePlusConnected(mContext);
                 if(isGooglePlusChecked) {
                     return;
                 } else {
                     ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
                     if (activeNetworkInfo != null) {
-                        startActivity(new Intent(getApplicationContext(), PlusAuthorizationActivity.class));
+                        startActivity(new Intent(mContext, PlusAuthorizationActivity.class));
                     } else {
                         // Show Dialog
                         buttonView.setChecked(false);
@@ -553,16 +560,16 @@ public class MainActivity extends ActionBarActivity {
             EditText myEditText = (EditText) findViewById(R.id.EditTextUpdate);
             String myDraftMessage = myEditText.getText().toString();
             Draft myDraft = new Draft(myDraftMessage);
-            MainActivity.saveDraft(MainActivity.DRAFT_GENERIC, myDraft, getApplicationContext());
+            MainActivity.saveDraft(MainActivity.DRAFT_GENERIC, myDraft, mContext);
             if (isChecked) {
-                if (APP_DOT_NET_TOKEN != null && PreferencesHelper.getAppDotNetConnected(getApplicationContext())) {
+                if (APP_DOT_NET_TOKEN != null && PreferencesHelper.getAppDotNetConnected(mContext)) {
                     return;
                 } else {
                     ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
                     if (activeNetworkInfo != null) {
                         // Launch AppNet Activity
-                        Intent AppNetAuth = new Intent(getApplicationContext(), AppDotNetAuthorizationActivity.class);
+                        Intent AppNetAuth = new Intent(mContext, AppDotNetAuthorizationActivity.class);
                         startActivity(AppNetAuth);
                     } else {
                         // Show Dialog
@@ -585,7 +592,7 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public boolean onLongClick(View v) {
             ClearLocation();
-            Toast.makeText(getApplicationContext(), getString(R.string.location_remove), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, getString(R.string.location_remove), Toast.LENGTH_SHORT).show();
             return true;
         }
     };
@@ -595,7 +602,7 @@ public class MainActivity extends ActionBarActivity {
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         if (activeNetworkInfo != null) {
-            Intent locationIntent = new Intent(getApplicationContext(), LocationActivity.class);
+            Intent locationIntent = new Intent(mContext, LocationActivity.class);
             startActivityForResult(locationIntent, PICK_LOCATION_REQUEST);
         } else {
             // Show Dialog
@@ -665,7 +672,7 @@ public class MainActivity extends ActionBarActivity {
     private boolean getMessageAdjustForLinks() {
         boolean adjustForLinks = true;
 
-        if (mToggleButtonFoursquare != null && mToggleButtonFoursquare.isChecked() && !PreferencesHelper.getBitlyConnected(getApplicationContext()))
+        if (mToggleButtonFoursquare != null && mToggleButtonFoursquare.isChecked() && !PreferencesHelper.getBitlyConnected(mContext))
             adjustForLinks = false;
 
         return adjustForLinks;
@@ -708,35 +715,35 @@ public class MainActivity extends ActionBarActivity {
     public void SendUpdate() {
         try {
             NotificationCompat.Builder mNotificationFacebook =
-                    new NotificationCompat.Builder(getApplicationContext())
+                    new NotificationCompat.Builder(mContext)
                             .setSmallIcon(R.drawable.ic_stat_rapido)
                             .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_facebook_large_icon))
                             .setContentTitle(getString(R.string.alert_title))
                             .setContentText(getString(R.string.alert_posting_facebook))
                             .setContentIntent(genericPendingIntent);
             NotificationCompat.Builder mNotificationTwitter =
-                    new NotificationCompat.Builder(getApplicationContext())
+                    new NotificationCompat.Builder(mContext)
                             .setSmallIcon(R.drawable.ic_stat_rapido)
                             .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_twitter_large_icon))
                             .setContentTitle(getString(R.string.alert_title))
                             .setContentText(getString(R.string.alert_posting_twitter))
                             .setContentIntent(genericPendingIntent);
             NotificationCompat.Builder mNotificationFoursquare =
-                    new NotificationCompat.Builder(getApplicationContext())
+                    new NotificationCompat.Builder(mContext)
                             .setSmallIcon(R.drawable.ic_stat_rapido)
                             .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_foursquare_large_icon))
                             .setContentTitle(getString(R.string.alert_title))
                             .setContentText(getString(R.string.alert_posting_foursquare))
                             .setContentIntent(genericPendingIntent);
             NotificationCompat.Builder mNotificationGooglePlus =
-                    new NotificationCompat.Builder(getApplicationContext())
+                    new NotificationCompat.Builder(mContext)
                             .setSmallIcon(R.drawable.ic_stat_rapido)
                             .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_google_plus_large_icon))
                             .setContentTitle(getString(R.string.alert_title))
                             .setContentText(getString(R.string.alert_posting_google_plus))
                             .setContentIntent(genericPendingIntent);
             NotificationCompat.Builder mNotificationAppDotNet =
-                    new NotificationCompat.Builder(getApplicationContext())
+                    new NotificationCompat.Builder(mContext)
                             .setSmallIcon(R.drawable.ic_stat_rapido)
                             .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_appnet_large_icon))
                             .setContentTitle(getString(R.string.alert_title))
@@ -749,7 +756,7 @@ public class MainActivity extends ActionBarActivity {
                 String update = mEditText.getText().toString();
                 Boolean isTwitter = mToggleButtonTwitter.isChecked();
                 Boolean isFacebook = mToggleButtonFacebook.isChecked();
-                Boolean isBitlyEnabled = PreferencesHelper.getBitlyConnected(getApplicationContext());
+                Boolean isBitlyEnabled = PreferencesHelper.getBitlyConnected(mContext);
                 Boolean useBitly;
                 Boolean isFoursquare = mToggleButtonFoursquare.isChecked();
                 Boolean isGooglePlus = mToggleButtonGooglePlus.isChecked();
@@ -804,21 +811,21 @@ public class MainActivity extends ActionBarActivity {
                                     facebookSession.openForPublish(new Session.OpenRequest(this));
                                 }
                                 mNotificationManager.notify(FACEBOOK_NOTIFICATION, mNotificationFacebook.getNotification());
-                                new Util.UpdateStatus(getApplicationContext(),
+                                new Util.UpdateStatus(mContext,
                                         Util.FACEBOOK_UPDATE, update,
                                         useBitly, myLatLng, myVenueId).execute();
                             }
 
                             if(isTwitter) {
                                 mNotificationManager.notify(TWITTER_NOTIFICATION, mNotificationTwitter.getNotification());
-                                new Util.UpdateStatus(getApplicationContext(),
+                                new Util.UpdateStatus(mContext,
                                         Util.TWITTER_UPDATE, update, useBitly,
                                         myLatLng).execute();
                             }
 
                             if(isFoursquare && CurrentPickedLocation.getIsFoursquare()) {
                                 mNotificationManager.notify(FOURSQUARE_NOTIFICATION, mNotificationFoursquare.getNotification());
-                                new Util.UpdateStatus(getApplicationContext(),
+                                new Util.UpdateStatus(mContext,
                                         Util.FOURSQUARE_UPDATE, update,
                                         useBitly, myLatLng, myVenueId)
                                         .execute();
@@ -833,7 +840,7 @@ public class MainActivity extends ActionBarActivity {
                                     }
                                 }
 
-                                new Util.UpdateStatus(getApplicationContext(),
+                                new Util.UpdateStatus(mContext,
                                         Util.GOOGLEPLUS_UPDATE, update,
                                         useBitly, myLatLng, myPrimaryLink,
                                         MainActivity.this, myPlusClient).execute();
@@ -841,28 +848,28 @@ public class MainActivity extends ActionBarActivity {
 
                             if(isAppDotNet) {
                                 mNotificationManager.notify(APP_DOT_NET_NOTIFICATION, mNotificationAppDotNet.getNotification());
-                                new Util.UpdateStatus(getApplicationContext(),
+                                new Util.UpdateStatus(mContext,
                                         Util.APPDOTNET_POST, update, useBitly, myLatLng,
                                         myVenueId).execute();
                             }
 
                             CloseApp();
                         } else {
-                            if(PreferencesHelper.getFoursquareEnabled(getApplicationContext()) && !getMessageAdjustForLinks())
+                            if(PreferencesHelper.getFoursquareEnabled(mContext) && !getMessageAdjustForLinks())
                                 Toast.makeText(
-                                        getApplicationContext(),
+                                        mContext,
                                         R.string.error_message_too_long_foursquare_links,
                                         Toast.LENGTH_SHORT).show();
                             else
-                                Toast.makeText(getApplicationContext(),
+                                Toast.makeText(mContext,
                                         R.string.error_message_too_long,
                                         Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(getApplicationContext(), R.string.error_no_message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, R.string.error_no_message, Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), R.string.error_no_services_selected, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, R.string.error_no_services_selected, Toast.LENGTH_SHORT).show();
                 }
             } else {
                 showDialog(DIALOG_NO_INTERNETS_ID);
@@ -930,7 +937,7 @@ public class MainActivity extends ActionBarActivity {
                                 // Foursquare Location
                                 mTextViewLocationName.setText(myPickedLocation.getName() != null ? myPickedLocation.getName() : "");
                                 mTextViewLocationDetails.setText(myPickedLocation.getAddressLine() != null ? myPickedLocation.getAddressLine() : "");
-                                if(PreferencesHelper.getFoursquareConnected(getApplicationContext())) {
+                                if(PreferencesHelper.getFoursquareConnected(mContext)) {
                                     foursquareEnabled = true;
                                     mToggleButtonFoursquare.setChecked(true);
                                 }
@@ -955,10 +962,10 @@ public class MainActivity extends ActionBarActivity {
                     googlePlusConnected = true;
                     mToggleButtonGooglePlus.setChecked(true);
                 } else if (resultCode == RESULT_CANCELED) {
-                    Toast.makeText(getApplicationContext(), "Google Plus auth cancelled.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Google Plus auth cancelled.", Toast.LENGTH_SHORT).show();
                     mToggleButtonGooglePlus.setChecked(false);
                 } else {
-                    Toast.makeText(getApplicationContext(), "Google Plus auth failed, try again.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Google Plus auth failed, try again.", Toast.LENGTH_SHORT).show();
                     mToggleButtonGooglePlus.setChecked(false);
                 }
                 break;
@@ -971,7 +978,7 @@ public class MainActivity extends ActionBarActivity {
                     if(codeResponse.getCode() != null) {
                         String authCode = codeResponse.getCode();
                         Intent tokenIntent = FoursquareOAuth.getTokenExchangeIntent(
-                                getApplicationContext(),
+                                mContext,
                                 AuthHelper.FOURSQUARE_CLIENT_ID,
                                 AuthHelper.FOURSQUARE_CLIENT_SECRET, authCode);
                         startActivityForResult(tokenIntent, REQUEST_FOURSQUARE_AUTH_TOKEN);
@@ -983,24 +990,24 @@ public class MainActivity extends ActionBarActivity {
                         FoursquareOAuth.getTokenFromResult(resultCode, data);
 
                 if(tokenResponse != null && tokenResponse.getAccessToken() != null) {
-                    PreferencesHelper.setFoursquareToken(getApplicationContext(),
+                    PreferencesHelper.setFoursquareToken(mContext,
                             tokenResponse.getAccessToken());
-                    PreferencesHelper.setFoursquareConnected(getApplicationContext(), true);
+                    PreferencesHelper.setFoursquareConnected(mContext, true);
                     mToggleButtonFoursquare.setChecked(true);
                 } else {
                     if(tokenResponse != null && tokenResponse.getException() != null) {
-                        Toast.makeText(getApplicationContext(),
+                        Toast.makeText(mContext,
                                 "Problem Authenticating: " + tokenResponse.getException().toString(),
                                 Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(getApplicationContext(),
+                        Toast.makeText(mContext,
                                 "Problem Authenticating: An unknown error occurred",
                                 Toast.LENGTH_SHORT).show();
                     }
 
                     mToggleButtonFoursquare.setChecked(false);
-                    PreferencesHelper.setFoursquareToken(getApplicationContext(), "");
-                    PreferencesHelper.setFoursquareConnected(getApplicationContext(), false);
+                    PreferencesHelper.setFoursquareToken(mContext, "");
+                    PreferencesHelper.setFoursquareConnected(mContext, false);
                 }
                 break;
             case FACEBOOK_LOGIN_RESULT: {
@@ -1046,7 +1053,7 @@ public class MainActivity extends ActionBarActivity {
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if(PreferencesHelper.getPersistentNotificationEnabled(getApplicationContext()))
+        if(PreferencesHelper.getPersistentNotificationEnabled(mContext))
             mNotificationManager.notify(RAPIDO_NOTIFICATION_PERSISTENT, mNotificationRapidoPersistent.getNotification());
         else
             mNotificationManager.cancel(RAPIDO_NOTIFICATION_PERSISTENT);
@@ -1056,7 +1063,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onDestroy() {
-        if(PreferencesHelper.getPersistentNotificationEnabled(getApplicationContext()))
+        if(PreferencesHelper.getPersistentNotificationEnabled(mContext))
             mNotificationManager.notify(RAPIDO_NOTIFICATION_PERSISTENT, mNotificationRapidoPersistent.getNotification());
         else
             mNotificationManager.cancel(RAPIDO_NOTIFICATION_PERSISTENT);
@@ -1066,7 +1073,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onPause() {
-        if(PreferencesHelper.getPersistentNotificationEnabled(getApplicationContext()))
+        if(PreferencesHelper.getPersistentNotificationEnabled(mContext))
             mNotificationManager.notify(RAPIDO_NOTIFICATION_PERSISTENT, mNotificationRapidoPersistent.getNotification());
         else
             mNotificationManager.cancel(RAPIDO_NOTIFICATION_PERSISTENT);
@@ -1091,14 +1098,14 @@ public class MainActivity extends ActionBarActivity {
     private void updateView() {
         Session session = Session.getActiveSession();
         if (session.isOpened()) {
-            PreferencesHelper.setFacebookConnected(getApplicationContext(), true);
-            PreferencesHelper.setFacebookKey(getApplicationContext(), session.getAccessToken());
-            PreferencesHelper.setFacebookEnabled(getApplicationContext(), true);
+            PreferencesHelper.setFacebookConnected(mContext, true);
+            PreferencesHelper.setFacebookKey(mContext, session.getAccessToken());
+            PreferencesHelper.setFacebookEnabled(mContext, true);
             mToggleButtonFacebook.setChecked(true);
         }
 //        } else {
-//            PreferencesHelper.setFacebookConnected(getApplicationContext(), false);
-//            PreferencesHelper.setFacebookKey(getApplicationContext(), "");
+//            PreferencesHelper.setFacebookConnected(mContext, false);
+//            PreferencesHelper.setFacebookKey(mContext, "");
 //            mToggleButtonFacebook.setChecked(false);
 //        }
     }

@@ -82,7 +82,6 @@ dependencies {
 
     compile files('libs/dashclock-api-r1.1.jar')
     compile 'com.google.api-client:google-api-client:1.18.0-rc'
-//    compile 'com.google.http-client:google-http-client:1.18.0-rc'
     compile 'com.google.oauth-client:google-oauth-client:1.18.0-rc'
     compile 'com.twitter:twitter-text:1.9.0'
     compile 'org.twitter4j:twitter4j-core:4.0.1'
