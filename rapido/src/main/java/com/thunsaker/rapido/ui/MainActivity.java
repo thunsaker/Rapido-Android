@@ -44,6 +44,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.plus.PlusClient;
 import com.google.gson.Gson;
+import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.rapido.BuildConfig;
 import com.thunsaker.rapido.R;
 import com.thunsaker.rapido.app.BaseRapidoActivity;
@@ -52,7 +53,6 @@ import com.thunsaker.rapido.classes.PickedLocation;
 import com.thunsaker.rapido.services.AuthHelper;
 import com.thunsaker.rapido.util.PreferencesHelper;
 import com.thunsaker.rapido.util.Util;
-import com.thunsaker.zapato.annotations.ForApplication;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
