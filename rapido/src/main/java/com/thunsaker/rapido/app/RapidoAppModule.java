@@ -6,12 +6,18 @@ import android.location.LocationManager;
 
 import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.android.common.dagger.AndroidApplicationModule;
+import com.thunsaker.rapido.services.AuthHelper;
+import com.thunsaker.rapido.services.twitter.TwitterClient;
+import com.thunsaker.rapido.services.twitter.TwitterTasks;
 import com.thunsaker.rapido.ui.MainActivity;
+import com.thunsaker.rapido.ui.TwitterAuthorizationActivity;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -21,7 +27,10 @@ import static android.content.Context.LOCATION_SERVICE;
         addsTo = AndroidApplicationModule.class,
         injects = {
                 RapidoApp.class,
-                MainActivity.class
+                MainActivity.class,
+                TwitterClient.class,
+                TwitterTasks.class,
+                TwitterAuthorizationActivity.class
         }
 )
 
@@ -38,6 +47,14 @@ public class RapidoAppModule {
     @Singleton
     LocationManager provideLocationManager(@ForApplication Context context) {
         return (LocationManager) context.getSystemService(LOCATION_SERVICE);
+    }
+
+    @Provides
+    @Singleton
+    Twitter providesTwitter() {
+        Twitter twitter = TwitterFactory.getSingleton();
+        twitter.setOAuthConsumer(AuthHelper.TWITTER_KEY, AuthHelper.TWITTER_SECRET);
+        return twitter;
     }
 
 // TODO: Foursquare Service

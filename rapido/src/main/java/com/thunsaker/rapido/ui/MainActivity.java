@@ -19,6 +19,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.ActionBar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,6 +51,7 @@ import com.thunsaker.rapido.R;
 import com.thunsaker.rapido.app.BaseRapidoActivity;
 import com.thunsaker.rapido.classes.Draft;
 import com.thunsaker.rapido.classes.PickedLocation;
+import com.thunsaker.rapido.classes.api.twitter.events.TwitterConnectedEvent;
 import com.thunsaker.rapido.services.AuthHelper;
 import com.thunsaker.rapido.util.PreferencesHelper;
 import com.thunsaker.rapido.util.Util;
@@ -62,10 +64,17 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import de.greenrobot.event.EventBus;
+
 public class MainActivity extends BaseRapidoActivity {
     @Inject
     @ForApplication
     Context mContext;
+
+    @Inject
+    EventBus mBus;
+
+    private static final String LOG_TAG = "MainActivity";
 
     private boolean useLogo = true;
     private boolean showHomeUp = false;
@@ -157,6 +166,10 @@ public class MainActivity extends BaseRapidoActivity {
         super.onCreate(savedInstanceState);
         if(!BuildConfig.DEBUG)
             Crashlytics.start(this);
+
+        if(!mBus.isRegistered(this))
+            mBus.register(this);
+
         setContentView(R.layout.activity_main);
         final ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(showHomeUp);
@@ -1110,5 +1123,16 @@ public class MainActivity extends BaseRapidoActivity {
 //            PreferencesHelper.setFacebookKey(mContext, "");
 //            mToggleButtonFacebook.setChecked(false);
 //        }
+    }
+
+    public void onEvent(TwitterConnectedEvent event) {
+        if(event != null) {
+            twitterConnected = event.result;
+        } else {
+            Log.d(LOG_TAG, "Auth failed...");
+            twitterConnected = false;
+        }
+
+        mToggleButtonTwitter.setChecked(twitterConnected);
     }
 }
