@@ -55,5 +55,4 @@ proguard/
 *.log
 
 rapido/src/main/assets/crashlytics-build.properties
-rapido/libs/**
 **/crashlytics.properties

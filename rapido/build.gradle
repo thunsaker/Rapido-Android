@@ -129,7 +129,7 @@ dependencies {
     compile 'com.google.android.gms:play-services:5.0.+'
     compile 'com.crashlytics.android:crashlytics:1.1.13'
     compile 'com.android.support:appcompat-v7:19.1.0'
-    compile files('libs/dashclock-api-r1.1.jar')
+    compile 'com.google.android.apps.dashclock:dashclock-api:+'
     compile 'com.google.api-client:google-api-client:1.18.0-rc'
     compile 'com.google.oauth-client:google-oauth-client:1.18.0-rc'
     compile 'com.twitter:twitter-text:1.9.0'
