@@ -4,9 +4,9 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.location.LocationManager;
 
+import com.thunsaker.android.common.annotations.ForApplication;
+import com.thunsaker.android.common.dagger.AndroidApplicationModule;
 import com.thunsaker.rapido.ui.MainActivity;
-import com.thunsaker.zapato.annotations.ForApplication;
-import com.thunsaker.zapato.dagger.AndroidApplicationModule;
 
 import javax.inject.Singleton;
 

@@ -1,6 +1,6 @@
 package com.thunsaker.rapido.app;
 
-import com.thunsaker.zapato.dagger.BaseFragment;
+import com.thunsaker.android.common.dagger.BaseFragment;
 
 public class BaseRapidoFragment extends BaseFragment {
     @Override

@@ -1,6 +1,6 @@
 package com.thunsaker.rapido.app;
 
-import com.thunsaker.zapato.dagger.DaggerApplication;
+import com.thunsaker.android.common.dagger.DaggerApplication;
 
 import java.util.Collections;
 import java.util.List;

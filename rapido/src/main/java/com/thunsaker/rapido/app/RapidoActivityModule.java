@@ -3,8 +3,8 @@ package com.thunsaker.rapido.app;
 import android.app.Activity;
 import android.content.Context;
 
+import com.thunsaker.android.common.annotations.ForActivity;
 import com.thunsaker.rapido.ui.MainActivity;
-import com.thunsaker.zapato.annotations.ForActivity;
 
 import javax.inject.Singleton;
 

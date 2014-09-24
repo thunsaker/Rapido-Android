@@ -127,7 +127,7 @@ public class AppDotNetHelper {
 
 				if(myCurrentLatLng != null) {
 					sendPostJsonDataExtras =
-						String.format(",\"annotations\":[{\"type\":\"net.app.core.geolocation\",\"value\":{\"latitude\":%s,\"longitude\":%s}}]",
+						String.format(",\"com.thunsaker.android.common.annotations\":[{\"type\":\"net.app.core.geolocation\",\"value\":{\"latitude\":%s,\"longitude\":%s}}]",
 						myCurrentLatLng.latitude, myCurrentLatLng.longitude);
 				}
 

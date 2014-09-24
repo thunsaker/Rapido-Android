@@ -2,7 +2,7 @@ package com.thunsaker.rapido.app;
 
 import android.os.Bundle;
 
-import com.thunsaker.zapato.dagger.BaseActivity;
+import com.thunsaker.android.common.dagger.BaseActivity;
 
 public class BaseRapidoActivity extends BaseActivity {
     @Override
