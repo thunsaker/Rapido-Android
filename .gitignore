@@ -54,8 +54,6 @@ proguard/
 # Log Files
 *.log
 
-facebookSDK/
 rapido/src/main/assets/crashlytics-build.properties
-rapido/src/main/res/values/donotsave.xml
 rapido/libs/**
-rapido/src/main/crashlytics.properties
+**/crashlytics.properties

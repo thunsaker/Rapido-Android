@@ -78,4 +78,5 @@
     <string name="prefs_clear_accounts">rapido_accounts_clear</string>
     <string name="prefs_misc_black">rapido_theme_black_enabled</string>
     <string name="prefs_persistent_notification_enabled">rapido_persistent_notification_enabled</string>
+    <string name="admob_id">a15114748744604</string>
 </resources>

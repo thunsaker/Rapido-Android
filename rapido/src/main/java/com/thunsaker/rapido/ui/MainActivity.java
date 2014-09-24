@@ -191,7 +191,7 @@ public class MainActivity extends BaseRapidoActivity {
         submitOnEnter = PreferencesHelper.getSendOnEnterEnabled(mContext);
 
         // Facebook Stuff
-        Settings.publishInstallAsync(mContext, getString(R.string.facebook_app_id));
+        Settings.publishInstallAsync(mContext, AuthHelper.FACEBOOK_AUTH_ID);
 
         if(facebookConnected) {
             // Import Existing Token
