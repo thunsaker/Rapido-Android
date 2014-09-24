@@ -11,7 +11,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-@Config(emulateSdk = 18) //, manifest = "src/main/AndroidManifest.xml")
+@Config(emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
 public class RapidoActivityRobolectricTest {
     @Test
