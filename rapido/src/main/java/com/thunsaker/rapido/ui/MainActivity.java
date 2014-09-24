@@ -252,12 +252,14 @@ public class MainActivity extends BaseRapidoActivity {
 
         SetupPersistentNotification();
 
-        AdView adView = (AdView)this.findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
-	        .addTestDevice("D17425E1A2C3EB1DE2D8E56DEE780F50")
-            .addTestDevice("1BF36BBC3C197AFF96AF3F9F305CAD48") // N5 - L
-	        .build();
-        adView.loadAd(adRequest);
+        if(!BuildConfig.DEBUG) {
+            AdView adView = (AdView) this.findViewById(R.id.adView);
+            AdRequest adRequest = new AdRequest.Builder()
+                    .addTestDevice("D17425E1A2C3EB1DE2D8E56DEE780F50")
+                    .addTestDevice("1BF36BBC3C197AFF96AF3F9F305CAD48") // N5 - L
+                    .build();
+            adView.loadAd(adRequest);
+        }
     }
 
     private void SetupPersistentNotification() {

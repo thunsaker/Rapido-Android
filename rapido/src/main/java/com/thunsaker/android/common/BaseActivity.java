@@ -1,26 +1,34 @@
-package com.thunsaker.android.common.dagger;
+package com.thunsaker.android.common;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
+
+import com.thunsaker.android.common.dagger.DaggerApplication;
+import com.thunsaker.android.common.dagger.Injector;
 
 import dagger.ObjectGraph;
 
-public abstract class BaseFragment extends Fragment implements Injector {
+public abstract class BaseActivity extends ActionBarActivity implements Injector {
     private ObjectGraph mActivityGraph;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        DaggerApplication daggerApplication = (DaggerApplication) getActivity().getApplication();
+        DaggerApplication daggerApplication = (DaggerApplication) getApplication();
         mActivityGraph = daggerApplication.getObjectGraph().plus(getActivityModules());
+
         mActivityGraph.inject(this);
     }
 
     @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         mActivityGraph = null;
         super.onDestroy();
+    }
+
+    protected <T> T getView(int id) {
+        return (T) findViewById(id);
     }
 
     @Override
@@ -28,7 +36,6 @@ public abstract class BaseFragment extends Fragment implements Injector {
         mActivityGraph.inject(object);
     }
 
-    @Override
     public ObjectGraph getObjectGraph() {
         return mActivityGraph;
     }

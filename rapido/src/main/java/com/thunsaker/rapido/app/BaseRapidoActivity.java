@@ -2,7 +2,7 @@ package com.thunsaker.rapido.app;
 
 import android.os.Bundle;
 
-import com.thunsaker.android.common.dagger.BaseActivity;
+import com.thunsaker.android.common.BaseActivity;
 
 public class BaseRapidoActivity extends BaseActivity {
     @Override
@@ -12,6 +12,8 @@ public class BaseRapidoActivity extends BaseActivity {
 
     @Override
     protected Object[] getActivityModules() {
-        return new RapidoActivityModule[0];
+        return new Object[] {
+                new RapidoActivityModule(this)
+        };
     }
 }
